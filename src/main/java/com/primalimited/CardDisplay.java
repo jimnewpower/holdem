@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CardDisplay extends JFrame {
@@ -18,7 +19,9 @@ public class CardDisplay extends JFrame {
         RIVER;
     }
 
+    private List<Card> currentHand;
     private State state = State.PRE_FLOP;
+    private JPanel textPanel = new JPanel();
 
     public CardDisplay(Deck deck) {
         setTitle("Holdem");
@@ -26,6 +29,9 @@ public class CardDisplay extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel cardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
+        add(textPanel, BorderLayout.NORTH);
+        textPanel.add(new JLabel(""));
 
         add(cardPanel, BorderLayout.CENTER);
 
@@ -63,9 +69,11 @@ public class CardDisplay extends JFrame {
         this.repaint();
     }
 
-    private void flop(JPanel cardPanel, Deck deck) {
-        List<Card> hand = deck.getDeck().subList(1, 4); // Burn 1, turn 3
-        for (Card card : hand) {
+    private List<Card> flop(JPanel cardPanel, Deck deck) {
+        List<Card> flop = deck.getDeck().subList(1, 4); // Burn 1, turn 3
+        textPanel.removeAll();
+        textPanel.add(new JLabel(""));
+        for (Card card : flop) {
             JLabel cardImageLabel = new JLabel();
             ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
@@ -74,6 +82,8 @@ public class CardDisplay extends JFrame {
         addBlankCard(cardPanel);
         addBlankCard(cardPanel);
         this.state = State.FLOP;
+        currentHand = new ArrayList<>(flop);
+        return flop;
     }
 
     private void addBlankCard(JPanel cardPanel) {
@@ -89,6 +99,7 @@ public class CardDisplay extends JFrame {
         cardPanel.remove(3);
         List<Card> hand = deck.getDeck().subList(4, 5); // Burn 1, turn 1
         for (Card card : hand) {
+            currentHand.add(card);
             JLabel cardImageLabel = new JLabel();
             ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
@@ -102,12 +113,17 @@ public class CardDisplay extends JFrame {
         cardPanel.remove(4);
         List<Card> hand = deck.getDeck().subList(5, 6); // Burn 1, turn 1
         for (Card card : hand) {
+            currentHand.add(card);
             JLabel cardImageLabel = new JLabel();
             ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
             cardPanel.add(cardImageLabel);
         }
         this.state = State.RIVER;
+
+        textPanel.removeAll();
+        HandRank handRank = new HandEvaluator().evaluateHand(currentHand);
+        textPanel.add(new JLabel(handRank.toString()));
     }
 
     private ImageIcon createScaledImageIcon(String path, int width, int height) {
