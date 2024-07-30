@@ -21,7 +21,7 @@ public class CardDisplay extends JFrame {
     private State state = State.PRE_FLOP;
 
     public CardDisplay(Deck deck) {
-        setTitle("5 Card Hand");
+        setTitle("Holdem");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -31,7 +31,7 @@ public class CardDisplay extends JFrame {
         JPanel buttonPanel = new JPanel();
         add(buttonPanel, BorderLayout.SOUTH);
 
-        JButton nextButton = new JButton("Next");
+        JButton nextButton = new JButton("Deal");
         buttonPanel.add(nextButton);
         nextButton.addActionListener(e -> deal(cardPanel, deck));
 
