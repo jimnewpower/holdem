@@ -25,7 +25,9 @@ public class CardDisplay extends JFrame {
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel cardPanel = new JPanel(new GridLayout(1, 5));
+//        JPanel cardPanel = new JPanel(new GridLayout(1, 5));
+        JPanel cardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+
         add(cardPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -37,7 +39,7 @@ public class CardDisplay extends JFrame {
 
         deal(cardPanel, deck);
 
-        setSize(CARD_WIDTH * 6, CARD_HEIGHT * 2);
+        setSize((CARD_WIDTH + 10) * 5 + 30, CARD_HEIGHT * 2);
         setVisible(true);
     }
 
