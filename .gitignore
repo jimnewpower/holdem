@@ -1,0 +1,74 @@
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+.idea_modules/
+atlassian-ide-plugin.xml
+.idea/libraries/
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/codeStyles/
+.idea/javadoc/
+.idea/log/
+.idea/dictionaries/
+.idea/runConfigurations/
+.idea/*___jb_tmp___
+.idea/scratches/
+.idea/index/
+.idea/dataSources/
+.idea/dataSources.local.xml
+.idea/vcs.xml
+.idea/svn.xml
+out/
+.idea/target/
+
+# Auto-generated sources
+generated/
+
+# JS build tools
+node_modules/
+
+# Java build tools
+build/
+target/
+
+# Byte-compiled / generated classes
+*.class
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+
+# Directory-based project format
+.idea/
+
+# File-based project format
+*.iws
+*.iml
+*.ipr
+
+# Ignore MacOS system files
+.DS_Store
+
+# Ignore Windows system files
+Thumbs.db
+
+# Ignore Eclipse project files
+.project
+.classpath
+.settings/
+
+# Ignore NetBeans project files
+.nb-configuration.xml
+
+# Ignore VSCode project files
+.vscode/
+
