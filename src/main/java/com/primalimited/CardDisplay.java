@@ -11,20 +11,102 @@ public class CardDisplay extends JFrame {
     private static final int CARD_WIDTH = 100;
     private static final int CARD_HEIGHT = 150;
 
-    public CardDisplay(List<Card> hand) {
+    private enum State {
+        PRE_FLOP,
+        FLOP,
+        TURN,
+        RIVER;
+    }
+
+    private State state = State.PRE_FLOP;
+
+    public CardDisplay(Deck deck) {
         setTitle("5 Card Hand");
-        setLayout(new FlowLayout());
+        setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        for (Card card : hand) {
-            JLabel label = new JLabel();
-            ImageIcon icon = createScaledImageIcon(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
-            label.setIcon(icon);
-            add(label);
-        }
+        JPanel cardPanel = new JPanel(new GridLayout(1, 5));
+        add(cardPanel, BorderLayout.CENTER);
 
-        pack();
+        JPanel buttonPanel = new JPanel();
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        JButton nextButton = new JButton("Next");
+        buttonPanel.add(nextButton);
+        nextButton.addActionListener(e -> deal(cardPanel, deck));
+
+        deal(cardPanel, deck);
+
+        setSize(CARD_WIDTH * 6, CARD_HEIGHT * 2);
         setVisible(true);
+    }
+
+    private void deal(JPanel cardPanel, Deck deck) {
+        switch (state) {
+            case PRE_FLOP:
+                flop(cardPanel, deck);
+                break;
+            case FLOP:
+                turn(cardPanel, deck);
+                break;
+            case TURN:
+                river(cardPanel, deck);
+                break;
+            case RIVER:
+                cardPanel.removeAll();
+                deck.shuffle();
+                flop(cardPanel, deck);
+                break;
+        }
+        this.validate();
+        this.repaint();
+    }
+
+    private void flop(JPanel cardPanel, Deck deck) {
+        List<Card> hand = deck.getDeck().subList(1, 4); // Burn 1, turn 3
+        for (Card card : hand) {
+            JLabel cardImageLabel = new JLabel();
+            ImageIcon icon = createScaledImageIcon(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            cardImageLabel.setIcon(icon);
+            cardPanel.add(cardImageLabel);
+        }
+        addBlankCard(cardPanel);
+        addBlankCard(cardPanel);
+        this.state = State.FLOP;
+    }
+
+    private void addBlankCard(JPanel cardPanel) {
+        JLabel cardImageLabel = new JLabel();
+        String pngPath = "/images/png/" + "blank" + ".png";
+        ImageIcon icon = createScaledImageIcon(pngPath, CARD_WIDTH, CARD_HEIGHT);
+        cardImageLabel.setIcon(icon);
+        cardPanel.add(cardImageLabel);
+    }
+
+    private void turn(JPanel cardPanel, Deck deck) {
+        cardPanel.remove(4);
+        cardPanel.remove(3);
+        List<Card> hand = deck.getDeck().subList(4, 5); // Burn 1, turn 1
+        for (Card card : hand) {
+            JLabel cardImageLabel = new JLabel();
+            ImageIcon icon = createScaledImageIcon(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            cardImageLabel.setIcon(icon);
+            cardPanel.add(cardImageLabel);
+        }
+        addBlankCard(cardPanel);
+        this.state = State.TURN;
+    }
+
+    private void river(JPanel cardPanel, Deck deck) {
+        cardPanel.remove(4);
+        List<Card> hand = deck.getDeck().subList(5, 6); // Burn 1, turn 1
+        for (Card card : hand) {
+            JLabel cardImageLabel = new JLabel();
+            ImageIcon icon = createScaledImageIcon(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            cardImageLabel.setIcon(icon);
+            cardPanel.add(cardImageLabel);
+        }
+        this.state = State.RIVER;
     }
 
     private ImageIcon createScaledImageIcon(String path, int width, int height) {
