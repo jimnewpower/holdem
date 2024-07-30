@@ -59,9 +59,9 @@ public class HandEvaluator {
             case FULL_HOUSE:
                 return getThreeOfAKindRank(cards) + getPairRank(cards);
             case FLUSH:
-                return getHighestCard(cards).getRankNumeric();
+                return getFlushTotalRank(cards);
             case STRAIGHT:
-                return getHighestCard(cards).getRankNumeric();
+                return getHighestCardRankInStraight(cards);
             case THREE_OF_A_KIND:
                 return getThreeOfAKindRank(cards);
             case TWO_PAIR:
@@ -305,12 +305,87 @@ public class HandEvaluator {
             ranks[i] = cards.get(i).getRankNumeric();
         }
         java.util.Arrays.sort(ranks);
-        for (int i = 0; i < ranks.length - 1; i++) {
-            if (ranks[i] + 1 != ranks[i + 1]) {
-                return false;
+        return hasFiveOrMoreSequentialValues(ranks);
+    }
+
+    public int getHighestCardRankInStraight(List<Card> cards) {
+        if (!isStraight(cards)) {
+            throw new IllegalArgumentException("cards must be a straight");
+        }
+
+        int[] ranks = new int[cards.size()];
+        for (int i = 0; i < cards.size(); i++) {
+            ranks[i] = cards.get(i).getRankNumeric();
+        }
+        java.util.Arrays.sort(ranks);
+
+        return findHighestInSequenceOfFiveOrMore(ranks);
+    }
+
+    public static boolean hasFiveOrMoreSequentialValues(int[] sortedArray) {
+        if (sortedArray.length < 5) {
+            return false;
+        }
+
+        int consecutiveCount = 1;
+
+        for (int i = 1; i < sortedArray.length; i++) {
+            if (sortedArray[i] == sortedArray[i - 1] + 1) {
+                consecutiveCount++;
+                if (consecutiveCount >= 5) {
+                    return true;
+                }
+            } else {
+                consecutiveCount = 1;
             }
         }
-        return true;
+
+        return false;
+    }
+
+    public static int findHighestInSequenceOfFiveOrMore(int[] sortedArray) {
+        if (sortedArray.length < 5) {
+            return -1; // Not enough elements to have a sequence of 5
+        }
+
+        int consecutiveCount = 1;
+        int highestValue = Integer.MIN_VALUE;
+
+        for (int i = 1; i < sortedArray.length; i++) {
+            if (sortedArray[i] == sortedArray[i - 1] + 1) {
+                consecutiveCount++;
+                if (consecutiveCount >= 5) {
+                    highestValue = Math.max(highestValue, sortedArray[i]);
+                }
+            } else {
+                consecutiveCount = 1;
+            }
+        }
+
+        return highestValue == Integer.MIN_VALUE ? null : highestValue;
+    }
+
+    public int getFlushTotalRank(List<Card> cards) {
+        if (!isFlush(cards)) {
+            throw new IllegalArgumentException("cards must be a flush");
+        }
+
+        int totalRank = 0;
+        Map<String, Integer> suitCount = new HashMap<>();
+        for (Card card : cards) {
+            suitCount.put(card.getSuit(), suitCount.getOrDefault(card.getSuit(), 0) + 1);
+        }
+
+        for (String suit : suitCount.keySet()) {
+            if (suitCount.get(suit) >= 5) {
+                for (Card card : cards) {
+                    if (card.getSuit().equals(suit)) {
+                        totalRank += card.getRankNumeric();
+                    }
+                }
+            }
+        }
+        return totalRank;
     }
 
     public boolean isFlush(List<Card> cards) {
@@ -319,12 +394,17 @@ public class HandEvaluator {
             throw new IllegalArgumentException("cards must not be empty");
         }
 
-        String suit = cards.get(0).getSuit();
+        Map<String, Integer> suitCount = new HashMap<>();
         for (Card card : cards) {
-            if (!card.getSuit().equals(suit)) {
-                return false;
+            suitCount.put(card.getSuit(), suitCount.getOrDefault(card.getSuit(), 0) + 1);
+        }
+
+        for (String suit : suitCount.keySet()) {
+            if (suitCount.get(suit) >= 5) {
+                return true;
             }
         }
-        return true;
+
+        return false;
     }
 }

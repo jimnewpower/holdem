@@ -31,4 +31,8 @@ public class Hole {
     public List<Card> getCards() {
         return cards;
     }
+
+    public int getHighestRank() {
+        return Math.max(card1.getRankNumeric(), card2.getRankNumeric());
+    }
 }

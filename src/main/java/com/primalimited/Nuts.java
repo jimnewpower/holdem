@@ -28,6 +28,10 @@ public class Nuts {
                     int rank2 = handEvaluator.getRank(hole.getCards());
                     if (rank2 > rank1) {
                         best = hole;
+                    } else {
+                        if (hole.getHighestRank() > best.getHighestRank()) {
+                            best = hole;
+                        }
                     }
                 }
             }
