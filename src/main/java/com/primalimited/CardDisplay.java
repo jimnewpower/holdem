@@ -22,27 +22,31 @@ public class CardDisplay extends JFrame {
     private List<Card> currentHand;
     private State state = State.PRE_FLOP;
     private JPanel textPanel = new JPanel();
+    private JPanel nutsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
     public CardDisplay(Deck deck) {
         setTitle("Holdem");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel cardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        JPanel cardsPanel = new JPanel();
+        add(cardsPanel, BorderLayout.CENTER);
+
+        JPanel boardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        cardsPanel.add(boardPanel);
+        cardsPanel.add(nutsPanel);
 
         add(textPanel, BorderLayout.NORTH);
         textPanel.add(new JLabel(""));
-
-        add(cardPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
         add(buttonPanel, BorderLayout.SOUTH);
 
         JButton nextButton = new JButton("Deal");
         buttonPanel.add(nextButton);
-        nextButton.addActionListener(e -> deal(cardPanel, deck));
+        nextButton.addActionListener(e -> deal(boardPanel, deck));
 
-        deal(cardPanel, deck);
+        deal(boardPanel, deck);
 
         setSize((CARD_WIDTH + 10) * 5 + 30, CARD_HEIGHT * 2);
         setVisible(true);
@@ -65,6 +69,7 @@ public class CardDisplay extends JFrame {
                 flop(cardPanel, deck);
                 break;
         }
+        showNuts();
         this.validate();
         this.repaint();
     }
@@ -124,6 +129,18 @@ public class CardDisplay extends JFrame {
         textPanel.removeAll();
         HandRank handRank = new HandEvaluator().evaluateHand(currentHand);
         textPanel.add(new JLabel(handRank.toString()));
+    }
+
+    private void showNuts() {
+        Nuts nuts = new Nuts();
+        Hole hole = nuts.findNuts(currentHand);
+        nutsPanel.removeAll();
+        for (Card card : hole.getCards()) {
+            JLabel cardImageLabel = new JLabel();
+            ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            cardImageLabel.setIcon(icon);
+            nutsPanel.add(cardImageLabel);
+        }
     }
 
     private ImageIcon createScaledImageIcon(String path, int width, int height) {

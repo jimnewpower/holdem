@@ -89,4 +89,37 @@ class HandEvaluatorTest {
         List<Card> hand = List.of(card1, card2, card3, card4, card5);
         assertTrue(handEvaluator.isFlush(hand));
     }
+
+    @Test
+    void isFourOfaKind() {
+        HandEvaluator handEvaluator = new HandEvaluator();
+        Card card1 = new Card("Ace", 14, "Hearts");
+        Card card2 = new Card("Ace", 14, "Spades");
+        Card card3 = new Card("Ace", 14, "Clubs");
+        Card card4 = new Card("Ace", 14, "Diamonds");
+        Card card5 = new Card("10", 10, "Hearts");
+        List<Card> hand = List.of(card1, card2, card3, card4, card5);
+        assertTrue(handEvaluator.isFourOfAKind(hand));
+    }
+
+    @Test
+    void fourOfaKindRank() {
+        HandEvaluator handEvaluator = new HandEvaluator();
+        Card card1 = new Card("Ace", 14, "Hearts");
+        Card card2 = new Card("Ace", 14, "Spades");
+        Card card3 = new Card("Ace", 14, "Clubs");
+        Card card4 = new Card("Ace", 14, "Diamonds");
+        Card card5 = new Card("10", 10, "Hearts");
+        List<Card> hand = List.of(card1, card2, card3, card4, card5);
+        assertEquals(14, handEvaluator.getFourOfAKindRank(hand));
+
+        card1 = new Card("7", 7, "Hearts");
+        card2 = new Card("7", 7, "Spades");
+        card3 = new Card("7", 7, "Clubs");
+        card4 = new Card("7", 7, "Diamonds");
+        card5 = new Card("10", 10, "Hearts");
+        hand = List.of(card1, card2, card3, card4, card5);
+        assertEquals(7, handEvaluator.getFourOfAKindRank(hand));
+
+    }
 }

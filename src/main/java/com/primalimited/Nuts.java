@@ -5,15 +5,34 @@ import java.util.List;
 
 public class Nuts {
 
-    public Hole findNuts(Flop flop) {
+    public Hole findNuts(List<Card> board) {
         List<Card> deck = new Deck().getDeck();
-        deck.remove(flop.getCard1());
-        deck.remove(flop.getCard2());
-        deck.remove(flop.getCard3());
+        deck.removeAll(board);
 
         List<Hole> holes = findAllHoleCardCombinations(deck);
 
-        return null;
+        HandEvaluator handEvaluator = new HandEvaluator();
+        Hole best = null;
+        int maxRank = 0;
+        for (Hole hole : holes) {
+            List<Card> hand = new ArrayList<>(board);
+            hand.addAll(hole.getCards());
+            HandRank handRank = handEvaluator.evaluateHand(hand);
+            int rank = handRank.ordinal();
+            if (rank > maxRank) {
+                maxRank = rank;
+                best = hole;
+            } else if (rank == maxRank) {
+                if (best != null) {
+                    int rank1 = handEvaluator.getRank(best.getCards());
+                    int rank2 = handEvaluator.getRank(hole.getCards());
+                    if (rank2 > rank1) {
+                        best = hole;
+                    }
+                }
+            }
+        }
+        return best;
     }
 
     public List<Hole> findAllHoleCardCombinations(List<Card> deck) {
