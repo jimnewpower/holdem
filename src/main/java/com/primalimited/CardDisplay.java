@@ -20,6 +20,7 @@ public class CardDisplay extends JFrame {
     }
 
     private List<Card> currentHand;
+    private Hole currentNuts;
     private State state = State.PRE_FLOP;
     private JPanel textPanel = new JPanel();
     private JPanel nutsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
@@ -127,15 +128,18 @@ public class CardDisplay extends JFrame {
         this.state = State.RIVER;
 
         textPanel.removeAll();
-        HandRank handRank = new HandEvaluator().evaluateHand(currentHand);
-        textPanel.add(new JLabel(handRank.toString()));
+        HandRank boarddRank = new HandEvaluator().evaluateHand(currentHand);
+        List<Card> totalHand = new ArrayList<>(currentHand);
+        totalHand.addAll(currentNuts.getCards());
+        HandRank nutsRank = new HandEvaluator().evaluateHand(totalHand);
+        textPanel.add(new JLabel("Board: " + boarddRank.toString() + "  Nuts: " + nutsRank.toString()));
     }
 
     private void showNuts() {
         Nuts nuts = new Nuts();
-        Hole hole = nuts.findNuts(currentHand);
+        this.currentNuts = nuts.findNuts(currentHand);
         nutsPanel.removeAll();
-        for (Card card : hole.getCards()) {
+        for (Card card : currentNuts.getCards()) {
             JLabel cardImageLabel = new JLabel();
             ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
