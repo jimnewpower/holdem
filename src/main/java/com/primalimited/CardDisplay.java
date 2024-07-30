@@ -8,8 +8,8 @@ import java.util.List;
 
 public class CardDisplay extends JFrame {
 
-    private static final int CARD_WIDTH = 100;
-    private static final int CARD_HEIGHT = 150;
+    private static final int CARD_WIDTH = 222;
+    private static final int CARD_HEIGHT = 323;
 
     private enum State {
         PRE_FLOP,
@@ -25,7 +25,6 @@ public class CardDisplay extends JFrame {
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-//        JPanel cardPanel = new JPanel(new GridLayout(1, 5));
         JPanel cardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
         add(cardPanel, BorderLayout.CENTER);
@@ -68,7 +67,7 @@ public class CardDisplay extends JFrame {
         List<Card> hand = deck.getDeck().subList(1, 4); // Burn 1, turn 3
         for (Card card : hand) {
             JLabel cardImageLabel = new JLabel();
-            ImageIcon icon = createScaledImageIcon(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
             cardPanel.add(cardImageLabel);
         }
@@ -79,7 +78,7 @@ public class CardDisplay extends JFrame {
 
     private void addBlankCard(JPanel cardPanel) {
         JLabel cardImageLabel = new JLabel();
-        String pngPath = "/images/png/" + "blank" + ".png";
+        String pngPath = "/images/png/" + "kem-cardback" + ".png";
         ImageIcon icon = createScaledImageIcon(pngPath, CARD_WIDTH, CARD_HEIGHT);
         cardImageLabel.setIcon(icon);
         cardPanel.add(cardImageLabel);
@@ -91,7 +90,7 @@ public class CardDisplay extends JFrame {
         List<Card> hand = deck.getDeck().subList(4, 5); // Burn 1, turn 1
         for (Card card : hand) {
             JLabel cardImageLabel = new JLabel();
-            ImageIcon icon = createScaledImageIcon(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
             cardPanel.add(cardImageLabel);
         }
@@ -104,7 +103,7 @@ public class CardDisplay extends JFrame {
         List<Card> hand = deck.getDeck().subList(5, 6); // Burn 1, turn 1
         for (Card card : hand) {
             JLabel cardImageLabel = new JLabel();
-            ImageIcon icon = createScaledImageIcon(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
             cardPanel.add(cardImageLabel);
         }
@@ -116,6 +115,28 @@ public class CardDisplay extends JFrame {
             BufferedImage img = ImageIO.read(getClass().getResource(path));
             Image scaledImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             return new ImageIcon(scaledImg);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private ImageIcon createScaledImageIconWithWhiteBackground(String path, int width, int height) {
+        try {
+            BufferedImage originalImage = ImageIO.read(getClass().getResource(path));
+
+            // Create a new image with a white background
+            BufferedImage whiteBackgroundImage = new BufferedImage(
+                    originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = whiteBackgroundImage.createGraphics();
+            g2d.setColor(Color.WHITE);
+            g2d.fillRect(0, 0, originalImage.getWidth(), originalImage.getHeight());
+            g2d.drawImage(originalImage, 0, 0, null);
+            g2d.dispose();
+
+            // Scale the image with a white background
+            Image scaledImage = whiteBackgroundImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            return new ImageIcon(scaledImage);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
