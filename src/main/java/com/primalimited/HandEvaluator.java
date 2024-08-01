@@ -482,7 +482,7 @@ public class HandEvaluator {
             }
         }
 
-        return highestValue == Integer.MIN_VALUE ? null : highestValue;
+        return highestValue == Integer.MIN_VALUE ? -1 : highestValue;
     }
 
     public int getFlushTotalRank(List<Card> cards) {

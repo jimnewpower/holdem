@@ -54,6 +54,19 @@ class NutsTest {
     }
 
     @Test
+    void higherStraight() {
+        List<Card> board = List.of(
+                Jack().ofSpades(),
+                Eight().ofHearts(),
+                Nine().ofSpades(),
+                Ten().ofDiamonds(),
+                Three().ofClubs()
+        );
+        Hole hole = new Nuts().findNuts(board);
+        assertTrue(hole.containsKing());
+    }
+
+    @Test
     void findAllHoleCardCombinations() {
         Nuts nuts = new Nuts();
         List<Hole> holes = nuts.findAllHoleCardCombinations(new Deck().getDeck());

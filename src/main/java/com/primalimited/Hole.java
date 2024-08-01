@@ -43,4 +43,29 @@ public class Hole {
     public boolean contains(Card card) {
         return card1.equals(card) || card2.equals(card);
     }
+
+    public boolean containsAce() {
+        return card1.getRankNumeric() == 14 || card2.getRankNumeric() == 14;
+    }
+
+    public boolean containsKing() {
+        return card1.getRankNumeric() == 13 || card2.getRankNumeric() == 13;
+    }
+
+    public boolean containsQueen() {
+        return card1.getRankNumeric() == 12 || card2.getRankNumeric() == 12;
+    }
+
+    public boolean containsJack() {
+        return card1.getRankNumeric() == 11 || card2.getRankNumeric() == 11;
+    }
+
+    public boolean containsTen() {
+        return card1.getRankNumeric() == 10 || card2.getRankNumeric() == 10;
+    }
+
+    public boolean isSuited() {
+        return card1.getSuit().equals(card2.getSuit());
+    }
+
 }

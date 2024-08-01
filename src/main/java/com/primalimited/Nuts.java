@@ -23,13 +23,23 @@ public class Nuts {
                 maxRank = rank;
                 best = hole;
             } else if (rank == maxRank) {
-                int rank1 = handEvaluator.getRank(best.getCards());
-                int rank2 = handEvaluator.getRank(hole.getCards());
-                if (rank2 > rank1) {
-                    best = hole;
-                } else {
-                    if (hole.getHighestRank() > best.getHighestRank()) {
+                if (HandRank.STRAIGHT == handRank) {
+                    List<Card> temp1 = new ArrayList<>(board);
+                    temp1.addAll(best.getCards());
+                    List<Card> temp2 = new ArrayList<>(board);
+                    temp2.addAll(hole.getCards());
+                    if (handEvaluator.getHighestCardRankInStraight(temp2) > handEvaluator.getHighestCardRankInStraight(temp1)) {
                         best = hole;
+                    }
+                } else {
+                    int rank1 = handEvaluator.getRank(best.getCards());
+                    int rank2 = handEvaluator.getRank(hole.getCards());
+                    if (rank2 > rank1) {
+                        best = hole;
+                    } else {
+                        if (hole.getHighestRank() > best.getHighestRank()) {
+                            best = hole;
+                        }
                     }
                 }
             }
