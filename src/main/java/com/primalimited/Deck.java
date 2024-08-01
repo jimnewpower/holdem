@@ -13,9 +13,10 @@ public class Deck {
     private Card turn;
     private Card river;
 
-    private static final String[] SUITS = {"Hearts", "Diamonds", "Clubs", "Spades"};
-    private static final String[] RANKS = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-    private static final int[] RANKS_NUMERIC = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+    private static final String[] SUITS = {"Spades", "Hearts", "Diamonds", "Clubs" };
+    private static final String[] RANKS = {"Ace", "King", "Queen", "Jack", "10", "9", "8", "7", "6", "5", "4", "3", "2"};
+
+    private static final int[] RANKS_NUMERIC = {14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
 
     public Deck() {
         reset();

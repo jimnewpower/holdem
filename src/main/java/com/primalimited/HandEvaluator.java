@@ -382,22 +382,47 @@ public class HandEvaluator {
             throw new IllegalArgumentException("cards must not be empty");
         }
 
-        int[] ranks = new int[cards.size()];
-        for (int i = 0; i < cards.size(); i++) {
-            ranks[i] = cards.get(i).getRankNumeric();
-        }
-        java.util.Arrays.sort(ranks);
-        if (hasFiveOrMoreSequentialValues(ranks)) {
-            return true;
+        // Sort the hand using CardRankComparator
+        List<Card> hand = new ArrayList<>();
+        for (Card card : cards) {
+            hand.add(card);
         }
 
-        if (ranks.length < 5) {
-            return false;
+        Collections.sort(hand, new CardRankComparator());
+
+        // Check for consecutive cards
+        int consecutiveCount = 1;
+        for (int i = 1; i < hand.size(); i++) {
+            Card currentCard = hand.get(i);
+            Card previousCard = hand.get(i - 1);
+
+            if (currentCard.getRankNumeric() == previousCard.getRankNumeric() + 1) {
+                consecutiveCount++;
+                if (consecutiveCount >= 5) {
+                    return true;
+                }
+            } else {
+                // Reset the count if not consecutive or different suit
+                consecutiveCount = 1;
+            }
         }
 
-        // Check for A-5-4-3-2 straight
-        if (ranks[0] == 2 && ranks[1] == 3 && ranks[2] == 4 && ranks[3] == 5 && ranks[4] == 14) {
-            return true;
+        if (containsAce(hand)) {
+            consecutiveCount = 1;
+            for (int i = 1; i < hand.size(); i++) {
+                Card currentCard = hand.get(i);
+                Card previousCard = hand.get(i - 1);
+
+                if (currentCard.getRankNumeric() == previousCard.getRankNumeric() + 1) {
+                    consecutiveCount++;
+                    if (consecutiveCount >= 4 && currentCard.getRankNumeric() == 5) {
+                        return true;
+                    }
+                } else {
+                    // Reset the count if not consecutive or different suit
+                    consecutiveCount = 1;
+                }
+            }
         }
 
         return false;

@@ -21,7 +21,8 @@ class NutsTest {
                 Ten().ofSpades()
         );
         Hole hole = nuts.findNuts(board);
-        assertEquals("Jack of Spades King of Spades", hole.toString());
+        assertTrue(hole.contains(Jack().ofSpades()));
+        assertTrue(hole.contains(King().ofSpades()));
     }
 
     @Test
@@ -35,7 +36,21 @@ class NutsTest {
                 Ten().ofSpades()
         );
         Hole hole = nuts.findNuts(board);
-        assertEquals("Ace of Spades King of Spades", hole.toString());
+        assertTrue(hole.contains(Ace().ofSpades()));
+        assertTrue(hole.contains(King().ofSpades()));
+    }
+
+    @Test
+    void a284Board() {
+        List<Card> board = List.of(
+                Ace().ofClubs(),
+                Two().ofSpades(),
+                Eight().ofSpades(),
+                Four().ofHearts()
+        );
+        Hole hole = new Nuts().findNuts(board);
+        assertEquals(3, hole.getLowestRank());
+        assertEquals(5, hole.getHighestRank());
     }
 
     @Test

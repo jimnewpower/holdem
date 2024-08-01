@@ -49,7 +49,7 @@ public class CardDisplay extends JFrame {
 
         deal(boardPanel, deck);
 
-        setSize((CARD_WIDTH + 10) * 5 + 30, CARD_HEIGHT * 2);
+        setSize((CARD_WIDTH + 10) * 5 + 30, (CARD_HEIGHT + 10) * 2 + 125);
         setVisible(true);
     }
 

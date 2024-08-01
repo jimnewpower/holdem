@@ -35,4 +35,12 @@ public class Hole {
     public int getHighestRank() {
         return Math.max(card1.getRankNumeric(), card2.getRankNumeric());
     }
+
+    public int getLowestRank() {
+        return Math.min(card1.getRankNumeric(), card2.getRankNumeric());
+    }
+
+    public boolean contains(Card card) {
+        return card1.equals(card) || card2.equals(card);
+    }
 }
