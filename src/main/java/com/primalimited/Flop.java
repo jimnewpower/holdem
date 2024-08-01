@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Flop {
+    public static Flop dealFlop(List<Card> deck) {
+        // start with index 1 to skip the burn card
+        Card card1 = deck.get(1);
+        Card card2 = deck.get(2);
+        Card card3 = deck.get(3);
+        return new Flop(card1, card2, card3);
+    }
+
     private List<Card> cards;
     private Card card1;
     private Card card2;

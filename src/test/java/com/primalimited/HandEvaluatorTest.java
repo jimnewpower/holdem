@@ -33,6 +33,38 @@ class HandEvaluatorTest {
     }
 
     @Test
+    void royalFlush7() {
+        List<Card> board = List.of(
+                King().ofSpades(),
+                Six().ofSpades(),
+                Jack().ofSpades(),
+                Queen().ofSpades(),
+                Ten().ofSpades(),
+                Two().ofHearts(),
+                Ace().ofSpades()
+        );
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(board);
+        assertEquals(HandRank.ROYAL_FLUSH, handRank);
+    }
+
+    @Test
+    void straightFlush7() {
+        List<Card> board = List.of(
+                Four().ofHearts(),
+                Six().ofSpades(),
+                Five().ofHearts(),
+                Two().ofHearts(),
+                Nine().ofSpades(),
+                Six().ofHearts(),
+                Three().ofHearts()
+        );
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(board);
+        assertEquals(HandRank.STRAIGHT_FLUSH, handRank);
+    }
+
+    @Test
     void containsPair() {
         HandEvaluator handEvaluator = new HandEvaluator();
         Card card1 = Ace().ofHearts();

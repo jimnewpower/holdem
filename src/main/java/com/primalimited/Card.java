@@ -47,7 +47,7 @@ class Card {
 
     @Override
     public String toString() {
-        return rank + " of " + suit + " [SVG: " + svgImagePath + ", PNG: " + pngImagePath + "]";
+        return rank + " of " + suit;
     }
 
     @Override

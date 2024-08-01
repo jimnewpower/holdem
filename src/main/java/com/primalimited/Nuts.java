@@ -6,14 +6,14 @@ import java.util.List;
 public class Nuts {
 
     public Hole findNuts(List<Card> board) {
-        List<Card> deck = new Deck().getDeck();
+        List<Card> deck = new ArrayList<>(new Deck().getDeck());
         deck.removeAll(board);
 
         List<Hole> holes = findAllHoleCardCombinations(deck);
 
         HandEvaluator handEvaluator = new HandEvaluator();
         Hole best = null;
-        int maxRank = 0;
+        int maxRank = -1;
         for (Hole hole : holes) {
             List<Card> hand = new ArrayList<>(board);
             hand.addAll(hole.getCards());
@@ -23,15 +23,13 @@ public class Nuts {
                 maxRank = rank;
                 best = hole;
             } else if (rank == maxRank) {
-                if (best != null) {
-                    int rank1 = handEvaluator.getRank(best.getCards());
-                    int rank2 = handEvaluator.getRank(hole.getCards());
-                    if (rank2 > rank1) {
+                int rank1 = handEvaluator.getRank(best.getCards());
+                int rank2 = handEvaluator.getRank(hole.getCards());
+                if (rank2 > rank1) {
+                    best = hole;
+                } else {
+                    if (hole.getHighestRank() > best.getHighestRank()) {
                         best = hole;
-                    } else {
-                        if (hole.getHighestRank() > best.getHighestRank()) {
-                            best = hole;
-                        }
                     }
                 }
             }

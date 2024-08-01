@@ -70,7 +70,6 @@ public class CardDisplay extends JFrame {
                 flop(cardPanel, deck);
                 break;
         }
-        showNuts();
         this.validate();
         this.repaint();
     }
@@ -89,6 +88,7 @@ public class CardDisplay extends JFrame {
         addBlankCard(cardPanel);
         this.state = State.FLOP;
         currentHand = new ArrayList<>(flop);
+        showNuts();
         return flop;
     }
 
@@ -111,6 +111,7 @@ public class CardDisplay extends JFrame {
             cardImageLabel.setIcon(icon);
             cardPanel.add(cardImageLabel);
         }
+        showNuts();
         addBlankCard(cardPanel);
         this.state = State.TURN;
     }
@@ -128,11 +129,12 @@ public class CardDisplay extends JFrame {
         this.state = State.RIVER;
 
         textPanel.removeAll();
-        HandRank boarddRank = new HandEvaluator().evaluateHand(currentHand);
+        HandRank boardRank = new HandEvaluator().evaluateHand(currentHand);
         List<Card> totalHand = new ArrayList<>(currentHand);
+        showNuts();
         totalHand.addAll(currentNuts.getCards());
         HandRank nutsRank = new HandEvaluator().evaluateHand(totalHand);
-        textPanel.add(new JLabel("Board: " + boarddRank.toString() + "  Nuts: " + nutsRank.toString()));
+        textPanel.add(new JLabel("Board: " + boardRank.toString() + "  Nuts: " + nutsRank.toString()));
     }
 
     private void showNuts() {

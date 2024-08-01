@@ -1,18 +1,16 @@
 package com.primalimited;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class HandEvaluator {
 
-    public HandRank evaluateHand(List<Card> cards) {
-        if (isStraight(cards) && isFlush(cards) && containsAce(cards)) {
+    public HandRank evaluateHand(List<Card> _cards) {
+        List<Card> cards = new ArrayList<>(_cards);
+        if (isRoyalFlush(cards)) {
             return HandRank.ROYAL_FLUSH;
         }
 
-        if (isStraight(cards) && isFlush(cards)) {
+        if (isStraightFlush(cards)) {
             return HandRank.STRAIGHT_FLUSH;
         }
 
@@ -294,6 +292,90 @@ public class HandEvaluator {
         return false;
     }
 
+    public boolean isRoyalFlush(List<Card> _hand) {
+        if (_hand.size() < 5) {
+            return false; // A straight flush requires at least 5 cards
+        }
+
+        if (!isFlush(_hand)) {
+            return false; // A straight flush requires all cards to be of the same suit
+        }
+
+        String flushSuit = getFlushSuit(_hand);
+
+        // Sort the hand using CardRankComparator
+        List<Card> hand = new ArrayList<>();
+        for (Card card : _hand) {
+            if (card.getSuit().equals(flushSuit)) {
+                hand.add(card);
+            }
+        }
+
+        Collections.sort(hand, new CardRankComparator());
+
+        // Check for consecutive cards of the same suit
+        int consecutiveCount = 1;
+        for (int i = 1; i < hand.size(); i++) {
+            Card currentCard = hand.get(i);
+            Card previousCard = hand.get(i - 1);
+
+            if (currentCard.getSuit().equals(previousCard.getSuit()) &&
+                    currentCard.getRankNumeric() == previousCard.getRankNumeric() + 1) {
+                consecutiveCount++;
+                if (consecutiveCount >= 5 && currentCard.getRank().equals("Ace")) {
+                    return true;
+                }
+            } else {
+                // Reset the count if not consecutive or different suit
+                consecutiveCount = 1;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isStraightFlush(List<Card> _hand) {
+        if (_hand.size() < 5) {
+            return false; // A straight flush requires at least 5 cards
+        }
+
+        if (!isFlush(_hand)) {
+            return false; // A straight flush requires all cards to be of the same suit
+        }
+
+        String flushSuit = getFlushSuit(_hand);
+
+        // Sort the hand using CardRankComparator
+        List<Card> hand = new ArrayList<>();
+        for (Card card : _hand) {
+            if (card.getSuit().equals(flushSuit)) {
+                hand.add(card);
+            }
+        }
+
+        Collections.sort(hand, new CardRankComparator());
+
+        // Check for consecutive cards of the same suit
+        int consecutiveCount = 1;
+        for (int i = 1; i < hand.size(); i++) {
+            Card currentCard = hand.get(i);
+            Card previousCard = hand.get(i - 1);
+
+            if (currentCard.getSuit().equals(previousCard.getSuit()) &&
+                    currentCard.getRankNumeric() == previousCard.getRankNumeric() + 1) {
+                consecutiveCount++;
+                if (consecutiveCount >= 5) {
+                    return true;
+                }
+            } else {
+                // Reset the count if not consecutive or different suit
+                consecutiveCount = 1;
+            }
+        }
+
+        return false;
+    }
+
     public boolean isStraight(List<Card> cards) {
         Objects.requireNonNull(cards, "cards must not be null");
         if (cards.isEmpty()) {
@@ -305,7 +387,20 @@ public class HandEvaluator {
             ranks[i] = cards.get(i).getRankNumeric();
         }
         java.util.Arrays.sort(ranks);
-        return hasFiveOrMoreSequentialValues(ranks);
+        if (hasFiveOrMoreSequentialValues(ranks)) {
+            return true;
+        }
+
+        if (ranks.length < 5) {
+            return false;
+        }
+
+        // Check for A-5-4-3-2 straight
+        if (ranks[0] == 2 && ranks[1] == 3 && ranks[2] == 4 && ranks[3] == 5 && ranks[4] == 14) {
+            return true;
+        }
+
+        return false;
     }
 
     public int getHighestCardRankInStraight(List<Card> cards) {
@@ -407,4 +502,24 @@ public class HandEvaluator {
 
         return false;
     }
+
+    public String getFlushSuit(List<Card> cards) {
+        if (!isFlush(cards)) {
+            throw new IllegalArgumentException("cards must be a flush");
+        }
+
+        Map<String, Integer> suitCount = new HashMap<>();
+        for (Card card : cards) {
+            suitCount.put(card.getSuit(), suitCount.getOrDefault(card.getSuit(), 0) + 1);
+        }
+
+        for (String suit : suitCount.keySet()) {
+            if (suitCount.get(suit) >= 5) {
+                return suit;
+            }
+        }
+
+        return "";
+    }
+
 }
