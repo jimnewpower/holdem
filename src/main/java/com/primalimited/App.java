@@ -12,6 +12,10 @@ public class App
     public static void main( String[] args ) {
         Deck deck = new Deck();
         deck.shuffle();
-        SwingUtilities.invokeLater(() -> new CardDisplay(deck));
+//        SwingUtilities.invokeLater(() -> new CardDisplay(deck));
+//        SwingUtilities.invokeLater(() -> new HoleRankingsView());
+        SwingUtilities.invokeLater(() -> new HoleRankingsQuiz());
     }
+
+
 }

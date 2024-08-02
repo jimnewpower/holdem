@@ -9,6 +9,14 @@ class Card {
     private String svgImagePath;
     private String pngImagePath;
 
+    public Card(Rank rank, Suit suit) {
+        this.rank = rank.toString();
+        this.rankNumeric = rank.getRankNumeric();
+        this.suit = suit.toString();
+        this.svgImagePath = "/images/svg/" + rank.getRank() + "_of_" + suit.getName() + ".svg";
+        this.pngImagePath = "/images/png/" + rank.getRank() + "_of_" + suit.getName() + ".png";
+    }
+
     public Card(String rank, int rankNumeric, String suit) {
         this.rank = rank;
         this.rankNumeric = rankNumeric;

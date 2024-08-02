@@ -25,6 +25,8 @@ public class CardDisplay extends JFrame {
     private JPanel textPanel = new JPanel();
     private JPanel nutsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
+    private Images images = new Images();
+
     public CardDisplay(Deck deck) {
         setTitle("Holdem");
         setLayout(new BorderLayout());
@@ -80,7 +82,7 @@ public class CardDisplay extends JFrame {
         textPanel.add(new JLabel(""));
         for (Card card : flop) {
             JLabel cardImageLabel = new JLabel();
-            ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
             cardPanel.add(cardImageLabel);
         }
@@ -95,7 +97,7 @@ public class CardDisplay extends JFrame {
     private void addBlankCard(JPanel cardPanel) {
         JLabel cardImageLabel = new JLabel();
         String pngPath = "/images/png/" + "kem-cardback" + ".png";
-        ImageIcon icon = createScaledImageIcon(pngPath, CARD_WIDTH, CARD_HEIGHT);
+        ImageIcon icon = images.createScaledImageIcon(pngPath, CARD_WIDTH, CARD_HEIGHT);
         cardImageLabel.setIcon(icon);
         cardPanel.add(cardImageLabel);
     }
@@ -107,7 +109,7 @@ public class CardDisplay extends JFrame {
         for (Card card : hand) {
             currentHand.add(card);
             JLabel cardImageLabel = new JLabel();
-            ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
             cardPanel.add(cardImageLabel);
         }
@@ -122,7 +124,7 @@ public class CardDisplay extends JFrame {
         for (Card card : hand) {
             currentHand.add(card);
             JLabel cardImageLabel = new JLabel();
-            ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
             cardPanel.add(cardImageLabel);
         }
@@ -143,43 +145,9 @@ public class CardDisplay extends JFrame {
         nutsPanel.removeAll();
         for (Card card : currentNuts.getCards()) {
             JLabel cardImageLabel = new JLabel();
-            ImageIcon icon = createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
+            ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);
             cardImageLabel.setIcon(icon);
             nutsPanel.add(cardImageLabel);
         }
     }
-
-    private ImageIcon createScaledImageIcon(String path, int width, int height) {
-        try {
-            BufferedImage img = ImageIO.read(getClass().getResource(path));
-            Image scaledImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            return new ImageIcon(scaledImg);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private ImageIcon createScaledImageIconWithWhiteBackground(String path, int width, int height) {
-        try {
-            BufferedImage originalImage = ImageIO.read(getClass().getResource(path));
-
-            // Create a new image with a white background
-            BufferedImage whiteBackgroundImage = new BufferedImage(
-                    originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = whiteBackgroundImage.createGraphics();
-            g2d.setColor(Color.WHITE);
-            g2d.fillRect(0, 0, originalImage.getWidth(), originalImage.getHeight());
-            g2d.drawImage(originalImage, 0, 0, null);
-            g2d.dispose();
-
-            // Scale the image with a white background
-            Image scaledImage = whiteBackgroundImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-            return new ImageIcon(scaledImage);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }

@@ -15,4 +15,8 @@ public enum Suit {
     public String getName() {
         return name;
     }
+
+    public static Suit random() {
+        return values()[(int) (Math.random() * values().length)];
+    }
 }

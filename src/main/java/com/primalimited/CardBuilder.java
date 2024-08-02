@@ -101,6 +101,10 @@ public class CardBuilder {
 
     }
 
+    public static Card of(Rank rank, Suit suit) {
+        return new Card(rank, suit);
+    }
+
 
     public Card ofHearts() {
         this.suit = "Hearts";
