@@ -212,11 +212,50 @@ public class HoleCardRanks {
     }
 
     public Map<Hole, Integer> getRandomMap(int n) {
-        Map<Hole, Integer> random = new HashMap<>();
+        Map<Hole, Integer> random = new HashMap<>(n);
         SecureRandom randomizer = new SecureRandom();
         while (random.size() < n) {
             int index = randomizer.nextInt(ranked.size());
             random.put(ranked.get(index), index+1);
+        }
+        return Collections.unmodifiableMap(random);
+    }
+
+    public Map<Hole, Integer> getRandomMapWithinRange(int nHoles, int rankingRange) {
+        Map<Hole, Integer> random = new HashMap<>(nHoles);
+        SecureRandom randomizer = new SecureRandom();
+
+        // add first random hole to map
+        int origIndex = randomizer.nextInt(ranked.size());
+        random.put(ranked.get(origIndex), origIndex+1);
+
+        // add remaining random holes to map, ensuring they are not duplicates and that their rankings are within the specified range
+        while (random.size() < nHoles) {
+            int index = randomizer.nextInt(ranked.size());
+            if (Math.abs(origIndex - index) <= rankingRange) {
+                random.put(ranked.get(index), index+1);
+            }
+        }
+        return Collections.unmodifiableMap(random);
+    }
+
+    public Map<Hole, Integer> getRandomMapWithinRange(int nHoles, int rankingRange, int minRank) {
+        Map<Hole, Integer> random = new HashMap<>(nHoles);
+        SecureRandom randomizer = new SecureRandom();
+
+        // add first random hole to map
+        int origIndex = randomizer.nextInt(ranked.size());
+        while (origIndex > minRank) {
+            origIndex = randomizer.nextInt(ranked.size());
+        }
+        random.put(ranked.get(origIndex), origIndex+1);
+
+        // add remaining random holes to map, ensuring they are not duplicates and that their rankings are within the specified range
+        while (random.size() < nHoles) {
+            int index = randomizer.nextInt(ranked.size());
+            if (Math.abs(origIndex - index) <= rankingRange) {
+                random.put(ranked.get(index), index+1);
+            }
         }
         return Collections.unmodifiableMap(random);
     }

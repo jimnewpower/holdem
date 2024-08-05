@@ -30,7 +30,7 @@ public class CardDisplay extends JFrame {
     public CardDisplay(Deck deck) {
         setTitle("Holdem");
         setLayout(new BorderLayout());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel cardsPanel = new JPanel();
         add(cardsPanel, BorderLayout.CENTER);

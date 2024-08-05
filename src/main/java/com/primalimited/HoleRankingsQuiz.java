@@ -3,13 +3,17 @@ package com.primalimited;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class HoleRankingsQuiz extends JFrame {
     private static final int CARD_WIDTH = 111;
     private static final int CARD_HEIGHT = 161;
 
     private static final int N_HOLES = 3;
+    private static final Color CORRECT_BACKGROUND = Color.green;
+    private static final Color INCORRECT_BACKGROUND = Color.red;
     private static final Color BACKGROUND_COLOR = Color.lightGray.brighter().brighter().brighter().brighter();
 
     JPanel topPanel = new JPanel();
@@ -43,18 +47,20 @@ public class HoleRankingsQuiz extends JFrame {
         showQuiz(cardsPanel);
 
         setTitle("Hole Rankings Quiz");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize((CARD_WIDTH * 2 + 10) * (N_HOLES + 1) + 30, (CARD_HEIGHT + 10) * N_HOLES + 125);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize((CARD_WIDTH * 2 + 10) * (N_HOLES + 1) + 30, (CARD_HEIGHT + 200));
         setVisible(true);
     }
 
     private void showQuiz(JPanel cardsPanel) {
         cardsPanel.removeAll();
-        final Map<Hole, Integer> map = ranks.getRandomMap(N_HOLES);
-        final Hole highestRank = ranks.getHighestRank(map);
-        final Map<Hole, JPanel> holeLabelMap = new HashMap<>();
-        map.keySet().forEach(hole -> {
+        final Map<Hole, Integer> holeRankMap = ranks.getRandomMapWithinRange(N_HOLES, 20, 40);
+        final Hole highestRank = ranks.getHighestRank(holeRankMap);
+        final Map<Hole, JPanel> holePanelMap = new HashMap<>();
+        final Set<JButton> buttons = new HashSet<>();
+        holeRankMap.keySet().forEach(hole -> {
             JButton holeButton = new JButton();
+            buttons.add(holeButton);
             holeButton.setLayout(new BorderLayout());
             JPanel cardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
             holeButton.add(cardPanel, BorderLayout.CENTER);
@@ -66,18 +72,22 @@ public class HoleRankingsQuiz extends JFrame {
             });
             cardsPanel.add(holeButton);
             JPanel labelPanel = new JPanel();
-            holeLabelMap.put(hole, labelPanel);
+            holePanelMap.put(hole, labelPanel);
             holeButton.add(labelPanel, BorderLayout.SOUTH);
             holeButton.addActionListener(e -> {
                 count++;
                 Hole selected = hole;
+                buttons.stream().forEach(b -> b.setEnabled(false));
                 if (highestRank.equals(selected)) {
                     correctCount++;
+                    holeButton.setBackground(CORRECT_BACKGROUND);
+                } else {
+                    holeButton.setBackground(INCORRECT_BACKGROUND);
                 }
-                map.keySet().stream().forEach(h -> {
-                    JPanel panel = holeLabelMap.get(h);
+                holeRankMap.keySet().stream().forEach(h -> {
+                    JPanel panel = holePanelMap.get(h);
                     panel.removeAll();
-                    int rank = map.get(h);
+                    int rank = holeRankMap.get(h);
                     String label = "";
                     if (selected == h) {
                         label += "*";
