@@ -17,7 +17,7 @@ public class HoleRankingsView extends JFrame {
 
     public HoleRankingsView() {
         setTitle("Hole Rankings");
-        setSize((CARD_WIDTH + 20) * 20 + 64, 600);
+        setSize((CARD_WIDTH + 40) * 20 + 64, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         cardsPanel.setLayout(new GridLayout(0, 10, 10, 10));
@@ -27,16 +27,18 @@ public class HoleRankingsView extends JFrame {
 
         Images images = new Images();
         HoleCardRanks ranks = new HoleCardRanks();
+        int rank = 1;
         for (Hole hole : ranks.getRanked()) {
-            cardsPanel.add(createHoleCardPanel(hole));
+            cardsPanel.add(createHoleCardPanel(hole, rank++));
         }
         setVisible(true);
     }
 
-    private JPanel createHoleCardPanel(Hole hole) {
+    private JPanel createHoleCardPanel(Hole hole, int rank) {
         JPanel holeCardPanel = new JPanel();
         holeCardPanel.setBorder(BorderFactory.createEtchedBorder());
         holeCardPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        holeCardPanel.add(new JLabel(String.valueOf(rank)));
         for (Card card : hole.getCards()) {
             JLabel cardImageLabel = new JLabel();
             ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), CARD_WIDTH, CARD_HEIGHT);

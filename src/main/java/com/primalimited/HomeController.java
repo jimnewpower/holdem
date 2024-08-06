@@ -67,6 +67,7 @@ public class HomeController implements Controller {
         randomHandsButton.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
                 Deck deck = new Deck();
+                deck.shuffle();
                 CardDisplay cardDisplay = new CardDisplay(deck);
             });
         });
