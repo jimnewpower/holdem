@@ -6,6 +6,9 @@ public class HandEvaluator {
 
     public HandRank evaluateHand(List<Card> _cards) {
         List<Card> cards = new ArrayList<>(_cards);
+
+        System.out.println("Evaluating cards: " + Arrays.toString(cards.toArray()));
+
         if (isRoyalFlush(cards)) {
             return HandRank.ROYAL_FLUSH;
         }
@@ -95,7 +98,7 @@ public class HandEvaluator {
         }
 
         for (Card card : cards) {
-            if (card.getRank().equals("Ace")) {
+            if (card.getRank() == Rank.ACE) {
                 return true;
             }
         }
@@ -108,11 +111,11 @@ public class HandEvaluator {
             throw new IllegalArgumentException("cards must not be empty");
         }
 
-        Map<String, Integer> rankCount = new HashMap<>();
+        Map<Integer, Integer> rankCount = new HashMap<>();
 
         // Count the occurrences of each rank
         for (Card card : cards) {
-            String rank = card.getRank();
+            int rank = card.getRankNumeric();
             rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
         }
 
@@ -128,11 +131,11 @@ public class HandEvaluator {
     }
 
     public boolean containsTwoPairs(List<Card> cards) {
-        Map<String, Integer> rankCount = new HashMap<>();
+        Map<Rank, Integer> rankCount = new HashMap<>();
 
         // Count the occurrences of each rank
         for (Card card : cards) {
-            String rank = card.getRank();
+            Rank rank = card.getRank();
             rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
         }
 
@@ -144,8 +147,8 @@ public class HandEvaluator {
             }
         }
 
-        // Check if there are exactly two pairs
-        return pairCount == 2;
+        // Check if there are at least two pairs (there could be 3 pairs with 7 cards)
+        return pairCount >= 2;
     }
 
     public int getTwoPairsHighestRank(List<Card> cards) {
@@ -157,7 +160,7 @@ public class HandEvaluator {
 
         // Count the occurrences of each rank
         for (Card card : cards) {
-            String rank = card.getRank();
+            int rank = card.getRankNumeric();
             rankCount.put(card.getRankNumeric(), rankCount.getOrDefault(card.getRankNumeric(), 0) + 1);
         }
 
@@ -274,11 +277,11 @@ public class HandEvaluator {
             throw new IllegalArgumentException("cards must not be empty");
         }
 
-        Map<String, Integer> rankCount = new HashMap<>();
+        Map<Integer, Integer> rankCount = new HashMap<>();
 
         // Count the occurrences of each rank
         for (Card card : cards) {
-            String rank = card.getRank();
+            int rank = card.getRankNumeric();
             rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
         }
 
@@ -301,7 +304,7 @@ public class HandEvaluator {
             return false; // A straight flush requires all cards to be of the same suit
         }
 
-        String flushSuit = getFlushSuit(_hand);
+        Suit flushSuit = getFlushSuit(_hand);
 
         // Sort the hand using CardRankComparator
         List<Card> hand = new ArrayList<>();
@@ -322,7 +325,7 @@ public class HandEvaluator {
             if (currentCard.getSuit().equals(previousCard.getSuit()) &&
                     currentCard.getRankNumeric() == previousCard.getRankNumeric() + 1) {
                 consecutiveCount++;
-                if (consecutiveCount >= 5 && currentCard.getRank().equals("Ace")) {
+                if (consecutiveCount >= 5 && currentCard.getRank() == Rank.ACE) {
                     return true;
                 }
             } else {
@@ -343,7 +346,7 @@ public class HandEvaluator {
             return false; // A straight flush requires all cards to be of the same suit
         }
 
-        String flushSuit = getFlushSuit(_hand);
+        Suit flushSuit = getFlushSuit(_hand);
 
         // Sort the hand using CardRankComparator
         List<Card> hand = new ArrayList<>();
@@ -396,6 +399,10 @@ public class HandEvaluator {
             Card currentCard = hand.get(i);
             Card previousCard = hand.get(i - 1);
 
+            if (currentCard.getRankNumeric() == previousCard.getRankNumeric()) {
+                continue;
+            }
+
             if (currentCard.getRankNumeric() == previousCard.getRankNumeric() + 1) {
                 consecutiveCount++;
                 if (consecutiveCount >= 5) {
@@ -407,15 +414,19 @@ public class HandEvaluator {
             }
         }
 
-        if (containsAce(hand)) {
+        if (containsAce(hand) && hand.get(0).getRankNumeric() == 2) {
             consecutiveCount = 1;
             for (int i = 1; i < hand.size(); i++) {
                 Card currentCard = hand.get(i);
                 Card previousCard = hand.get(i - 1);
 
+                if (currentCard.getRankNumeric() == previousCard.getRankNumeric()) {
+                    continue;
+                }
+
                 if (currentCard.getRankNumeric() == previousCard.getRankNumeric() + 1) {
                     consecutiveCount++;
-                    if (consecutiveCount >= 4 && currentCard.getRankNumeric() == 5) {
+                    if (consecutiveCount >= 4) {
                         return true;
                     }
                 } else {
@@ -491,12 +502,12 @@ public class HandEvaluator {
         }
 
         int totalRank = 0;
-        Map<String, Integer> suitCount = new HashMap<>();
+        Map<Suit, Integer> suitCount = new HashMap<>();
         for (Card card : cards) {
             suitCount.put(card.getSuit(), suitCount.getOrDefault(card.getSuit(), 0) + 1);
         }
 
-        for (String suit : suitCount.keySet()) {
+        for (Suit suit : suitCount.keySet()) {
             if (suitCount.get(suit) >= 5) {
                 for (Card card : cards) {
                     if (card.getSuit().equals(suit)) {
@@ -514,12 +525,12 @@ public class HandEvaluator {
             throw new IllegalArgumentException("cards must not be empty");
         }
 
-        Map<String, Integer> suitCount = new HashMap<>();
+        Map<Suit, Integer> suitCount = new HashMap<>();
         for (Card card : cards) {
             suitCount.put(card.getSuit(), suitCount.getOrDefault(card.getSuit(), 0) + 1);
         }
 
-        for (String suit : suitCount.keySet()) {
+        for (Suit suit : suitCount.keySet()) {
             if (suitCount.get(suit) >= 5) {
                 return true;
             }
@@ -528,23 +539,23 @@ public class HandEvaluator {
         return false;
     }
 
-    public String getFlushSuit(List<Card> cards) {
+    public Suit getFlushSuit(List<Card> cards) {
         if (!isFlush(cards)) {
             throw new IllegalArgumentException("cards must be a flush");
         }
 
-        Map<String, Integer> suitCount = new HashMap<>();
+        Map<Suit, Integer> suitCount = new HashMap<>();
         for (Card card : cards) {
             suitCount.put(card.getSuit(), suitCount.getOrDefault(card.getSuit(), 0) + 1);
         }
 
-        for (String suit : suitCount.keySet()) {
+        for (Suit suit : suitCount.keySet()) {
             if (suitCount.get(suit) >= 5) {
                 return suit;
             }
         }
 
-        return "";
+        return null;
     }
 
 }

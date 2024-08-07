@@ -91,11 +91,11 @@ class HandEvaluatorTest {
     @Test
     void isThreeOfAKind() {
         HandEvaluator handEvaluator = new HandEvaluator();
-        Card card1 = new Card("Ace", 14, "Hearts");
-        Card card2 = new Card("Ace", 14, "Spades");
-        Card card3 = new Card("Ace", 14, "Hearts");
-        Card card4 = new Card("4", 4, "Diamonds");
-        Card card5 = new Card("9", 9, "Clubs");
+        Card card1 = Ace().ofHearts();
+        Card card2 = Ace().ofSpades();
+        Card card3 = Ace().ofDiamonds();
+        Card card4 = Four().ofDiamonds();
+        Card card5 = Nine().ofClubs();
         List<Card> hand = List.of(card1, card2, card3, card4, card5);
         assertTrue(handEvaluator.isThreeOfAKind(hand));
     }
@@ -103,11 +103,11 @@ class HandEvaluatorTest {
     @Test
     void isStraight() {
         HandEvaluator handEvaluator = new HandEvaluator();
-        Card card1 = new Card("Ace", 14, "Hearts");
-        Card card2 = new Card("King", 13, "Spades");
-        Card card3 = new Card("Queen", 12, "Hearts");
-        Card card4 = new Card("Jack", 11, "Diamonds");
-        Card card5 = new Card("10", 10, "Clubs");
+        Card card1 = Ace().ofHearts();
+        Card card2 = King().ofSpades();
+        Card card3 = Queen().ofHearts();
+        Card card4 = Jack().ofDiamonds();
+        Card card5 = Ten().ofClubs();
         List<Card> hand = List.of(card1, card2, card3, card4, card5);
         assertTrue(handEvaluator.isStraight(hand));
     }
@@ -115,11 +115,11 @@ class HandEvaluatorTest {
     @Test
     void isFlush() {
         HandEvaluator handEvaluator = new HandEvaluator();
-        Card card1 = new Card("Ace", 14, "Hearts");
-        Card card2 = new Card("King", 13, "Hearts");
-        Card card3 = new Card("9", 9, "Hearts");
-        Card card4 = new Card("4", 4, "Hearts");
-        Card card5 = new Card("10", 10, "Hearts");
+        Card card1 = Ace().ofHearts();
+        Card card2 = King().ofHearts();
+        Card card3 = Nine().ofHearts();
+        Card card4 = Four().ofHearts();
+        Card card5 = Ten().ofHearts();
         List<Card> hand = List.of(card1, card2, card3, card4, card5);
         assertTrue(handEvaluator.isFlush(hand));
     }
@@ -127,11 +127,11 @@ class HandEvaluatorTest {
     @Test
     void isFourOfaKind() {
         HandEvaluator handEvaluator = new HandEvaluator();
-        Card card1 = new Card("Ace", 14, "Hearts");
-        Card card2 = new Card("Ace", 14, "Spades");
-        Card card3 = new Card("Ace", 14, "Clubs");
-        Card card4 = new Card("Ace", 14, "Diamonds");
-        Card card5 = new Card("10", 10, "Hearts");
+        Card card1 = Six().ofHearts();
+        Card card2 = Six().ofSpades();
+        Card card3 = Four().ofDiamonds();
+        Card card4 = Six().ofClubs();
+        Card card5 = Six().ofDiamonds();
         List<Card> hand = List.of(card1, card2, card3, card4, card5);
         assertTrue(handEvaluator.isFourOfAKind(hand));
     }
@@ -139,21 +139,117 @@ class HandEvaluatorTest {
     @Test
     void fourOfaKindRank() {
         HandEvaluator handEvaluator = new HandEvaluator();
-        Card card1 = new Card("Ace", 14, "Hearts");
-        Card card2 = new Card("Ace", 14, "Spades");
-        Card card3 = new Card("Ace", 14, "Clubs");
-        Card card4 = new Card("Ace", 14, "Diamonds");
-        Card card5 = new Card("10", 10, "Hearts");
+        Card card1 = Ace().ofHearts();
+        Card card2 = Ace().ofSpades();
+        Card card3 = Ace().ofClubs();
+        Card card4 = Ace().ofDiamonds();
+        Card card5 = Ten().ofHearts();
         List<Card> hand = List.of(card1, card2, card3, card4, card5);
         assertEquals(14, handEvaluator.getFourOfAKindRank(hand));
 
-        card1 = new Card("7", 7, "Hearts");
-        card2 = new Card("7", 7, "Spades");
-        card3 = new Card("7", 7, "Clubs");
-        card4 = new Card("7", 7, "Diamonds");
-        card5 = new Card("10", 10, "Hearts");
+        card1 = Seven().ofHearts();
+        card2 = Seven().ofSpades();
+        card3 = Seven().ofClubs();
+        card4 = Seven().ofDiamonds();
+        card5 = Ten().ofHearts();
         hand = List.of(card1, card2, card3, card4, card5);
         assertEquals(7, handEvaluator.getFourOfAKindRank(hand));
-
     }
+
+    @Test
+    void specificHand() {
+        Hole hole = new Hole(Ace().ofSpades(), Two().ofDiamonds());
+        List<Card> board = List.of(
+                Three().ofClubs(),
+                Five().ofClubs(),
+                Ace().ofSpades(),
+                Two().ofSpades(),
+                Three().ofDiamonds()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.TWO_PAIR, handRank);
+    }
+
+    @Test
+    void specificHand2() {
+        Hole hole = new Hole(Ace().ofDiamonds(), Five().ofClubs());
+        List<Card> board = List.of(
+                Two().ofHearts(),
+                Ace().ofHearts(),
+                Four().ofSpades(),
+                Four().ofHearts(),
+                Three().ofHearts()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.STRAIGHT, handRank);
+    }
+
+    @Test
+    void specificHand3() {
+        Hole hole = new Hole(Four().ofDiamonds(), Five().ofDiamonds());
+        List<Card> board = List.of(
+                Three().ofSpades(),
+                Ace().ofHearts(),
+                Two().ofSpades(),
+                Queen().ofClubs(),
+                Nine().ofClubs()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.STRAIGHT, handRank);
+    }
+
+
+    @Test
+    void specificHand4() {
+        Hole hole = new Hole(Three().ofHearts(), Five().ofDiamonds());
+        List<Card> board = List.of(
+                Queen().ofHearts(),
+                Ten().ofSpades(),
+                Ace().ofHearts(),
+                Four().ofHearts(),
+                Two().ofClubs()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.STRAIGHT, handRank);
+    }
+
+    @Test
+    void specificHand5() {
+        Hole hole = new Hole(Ten().ofClubs(), Ace().ofClubs());
+        List<Card> board = List.of(
+                Jack().ofHearts(),
+                Four().ofSpades(),
+                Two().ofDiamonds(),
+                Three().ofSpades(),
+                Five().ofClubs()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.STRAIGHT, handRank);
+    }
+
 }

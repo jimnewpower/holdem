@@ -53,7 +53,7 @@ public class Flop {
     }
 
     public boolean containsAce() {
-        return card1.getRank().equals("Ace") || card2.getRank().equals("Ace") || card3.getRank().equals("Ace");
+        return card1.getRank() == Rank.ACE || card2.getRank() == Rank.ACE || card3.getRank() == Rank.ACE;
     }
 
     public boolean possibleStraight() {

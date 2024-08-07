@@ -32,8 +32,16 @@ public class Hole {
         return cards;
     }
 
+    public int getTotalRank() {
+        return card1.getRankNumeric() + card2.getRankNumeric();
+    }
+
     public int getHighestRank() {
         return Math.max(card1.getRankNumeric(), card2.getRankNumeric());
+    }
+
+    public int getSpread() {
+        return Math.abs(card1.getRankNumeric() - card2.getRankNumeric());
     }
 
     public int getLowestRank() {
@@ -68,4 +76,25 @@ public class Hole {
         return card1.getSuit().equals(card2.getSuit());
     }
 
+    public boolean isPair() {
+        return card1.getRankNumeric() == card2.getRankNumeric();
+    }
+
+    public boolean isPlayable() {
+        if (isPair())
+            return true;
+        if (isSuited() && getHighestRank() >= 9 && getSpread() <= 4)
+            return true;
+        if (containsAce())
+            return true;
+        if (isSuited() && (containsKing() || containsQueen() || containsJack() || containsTen()))
+            return true;
+        if (isSuited() && getSpread() <= 4)
+            return true;
+        if (getTotalRank() >= 19)
+            return true;
+        if (getSpread() <= 2 && getLowestRank() >= 6)
+            return true;
+        return false;
+    }
 }

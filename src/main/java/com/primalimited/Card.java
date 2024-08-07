@@ -3,45 +3,27 @@ package com.primalimited;
 import java.util.Objects;
 
 class Card {
-    private String rank;
-    private int rankNumeric;
-    private String suit;
+    private Rank rank;
+    private Suit suit;
     private String svgImagePath;
     private String pngImagePath;
 
     public Card(Rank rank, Suit suit) {
-        this.rank = rank.toString();
-        this.rankNumeric = rank.getRankNumeric();
-        this.suit = suit.toString();
-        this.svgImagePath = "/images/svg/" + rank.getRank() + "_of_" + suit.getName() + ".svg";
-        this.pngImagePath = "/images/png/" + rank.getRank() + "_of_" + suit.getName() + ".png";
-    }
-
-    public Card(String rank, int rankNumeric, String suit) {
         this.rank = rank;
-        this.rankNumeric = rankNumeric;
         this.suit = suit;
-        this.svgImagePath = "";
-        this.pngImagePath = "";
+        this.svgImagePath = "/images/svg/" + rank.getRank().toLowerCase() + "_of_" + suit.getName().toLowerCase() + ".svg";
+        this.pngImagePath = "/images/png/" + rank.getRank().toLowerCase() + "_of_" + suit.getName().toLowerCase() + ".png";
     }
 
-    public Card(String rank, int rankNumeric, String suit, String svgImagePath, String pngImagePath) {
-        this.rank = rank;
-        this.rankNumeric = rankNumeric;
-        this.suit = suit;
-        this.svgImagePath = svgImagePath;
-        this.pngImagePath = pngImagePath;
-    }
-
-    public String getRank() {
+    public Rank getRank() {
         return rank;
     }
 
     public int getRankNumeric() {
-        return rankNumeric;
+        return rank.getRankNumeric();
     }
 
-    public String getSuit() {
+    public Suit getSuit() {
         return suit;
     }
 

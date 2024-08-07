@@ -85,6 +85,20 @@ public class HomeController implements Controller {
         holeRankingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
 
+        JButton gameButton = new JButton("Game");
+        gameButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                JButton dealButton = new JButton("Deal");
+                GameFrame gameFrame = new GameFrame(dealButton);
+                dealButton.addActionListener(e1 -> {
+                    gameFrame.redeal();
+                });
+            });
+        });
+        buttonPanel.add(gameButton);
+        gameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
+
         frame.setSize(300, 300);
         frame.setVisible(true);
         return frame;

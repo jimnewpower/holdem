@@ -13,23 +13,16 @@ public class Deck {
     private Card turn;
     private Card river;
 
-    private static final String[] SUITS = {"Spades", "Hearts", "Diamonds", "Clubs" };
-    private static final String[] RANKS = {"Ace", "King", "Queen", "Jack", "10", "9", "8", "7", "6", "5", "4", "3", "2"};
-
-    private static final int[] RANKS_NUMERIC = {14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
-
     public Deck() {
         reset();
     }
 
     public void reset() {
         deck = new ArrayList<>();
-        for (String suit : SUITS) {
+        for (Suit suit : Suit.values()) {
             int index = 0;
-            for (String rank : RANKS) {
-                String svgPath = "/images/svg/" + rank + "_of_" + suit + ".svg";
-                String pngPath = "/images/png/" + rank + "_of_" + suit + ".png";
-                deck.add(new Card(rank, RANKS_NUMERIC[index++], suit, svgPath, pngPath));
+            for (Rank rank : Rank.values()) {
+                deck.add(new Card(rank, suit));
             }
         }
 
@@ -58,22 +51,25 @@ public class Deck {
         return card;
     }
 
-    public void flop() {
+    public List<Card> flop() {
         burn();
         flop = new ArrayList<>();
         flop.add(deal());
         flop.add(deal());
         flop.add(deal());
+        return Collections.unmodifiableList(flop);
     }
 
-    public void turn() {
+    public Card turn() {
         burn();
         turn = deal();
+        return turn;
     }
 
-    public void river() {
+    public Card river() {
         burn();
         river = deal();
+        return river;
     }
 
     public List<Card> getFlop() {
@@ -103,5 +99,6 @@ public class Deck {
     public List<Card> getDealt() {
         return List.of(dealt.toArray(new Card[0]));
     }
+
 }
 

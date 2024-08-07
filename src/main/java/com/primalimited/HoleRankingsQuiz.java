@@ -98,7 +98,9 @@ public class HoleRankingsQuiz extends JFrame {
                     panel.repaint();
                 });
                 topPanel.removeAll();
-                topPanel.add(new JLabel("Hole Rankings Quiz: " + correctCount + " of " + count + " correct"));
+                double percent = (double) correctCount / count * 100;
+                String message = "Hole Rankings Quiz: " + correctCount + " of " + count + " correct " + String.format("%.2f", percent) + "%";
+                topPanel.add(new JLabel(message));
                 validate();
                 repaint();
             });

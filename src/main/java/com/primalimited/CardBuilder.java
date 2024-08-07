@@ -4,98 +4,84 @@ public class CardBuilder {
 
     public static CardBuilder Ace() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "Ace";
-        builder.rankNumeric = 14;
+        builder.rank = Rank.ACE;
         return builder;
     }
 
     public static CardBuilder King() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "King";
-        builder.rankNumeric = 13;
+        builder.rank = Rank.KING;
         return builder;
     }
 
     public static CardBuilder Queen() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "Queen";
-        builder.rankNumeric = 12;
+        builder.rank = Rank.QUEEN;
         return builder;
     }
 
     public static CardBuilder Jack() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "Jack";
-        builder.rankNumeric = 11;
+        builder.rank = Rank.JACK;
         return builder;
     }
 
     public static CardBuilder Ten() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "10";
-        builder.rankNumeric = 10;
+        builder.rank = Rank.TEN;
         return builder;
     }
 
     public static CardBuilder Nine() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "9";
-        builder.rankNumeric = 9;
+        builder.rank = Rank.NINE;
         return builder;
     }
 
     public static CardBuilder Eight() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "8";
-        builder.rankNumeric = 8;
+        builder.rank = Rank.EIGHT;
         return builder;
     }
 
     public static CardBuilder Seven() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "7";
-        builder.rankNumeric = 7;
+        builder.rank = Rank.SEVEN;
         return builder;
     }
 
     public static CardBuilder Six() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "6";
-        builder.rankNumeric = 6;
+        builder.rank = Rank.SIX;
         return builder;
     }
 
     public static CardBuilder Five() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "5";
-        builder.rankNumeric = 5;
+        builder.rank = Rank.FIVE;
         return builder;
     }
 
     public static CardBuilder Four() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "4";
-        builder.rankNumeric = 4;
+        builder.rank = Rank.FOUR;
         return builder;
     }
 
     public static CardBuilder Three() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "3";
-        builder.rankNumeric = 3;
+        builder.rank = Rank.THREE;
         return builder;
     }
 
     public static CardBuilder Two() {
         CardBuilder builder = new CardBuilder();
-        builder.rank = "2";
-        builder.rankNumeric = 2;
+        builder.rank = Rank.TWO;
         return builder;
     }
 
-    private String rank;
-    private int rankNumeric;
-    private String suit;
+    private Rank rank;
+    private Suit suit;
 
     public CardBuilder() {
 
@@ -107,26 +93,26 @@ public class CardBuilder {
 
 
     public Card ofHearts() {
-        this.suit = "Hearts";
+        this.suit = Suit.HEARTS;
         return build();
     }
 
     public Card ofDiamonds() {
-        this.suit = "Diamonds";
+        this.suit = Suit.DIAMONDS;
         return build();
     }
 
     public Card ofClubs() {
-        this.suit = "Clubs";
+        this.suit = Suit.CLUBS;
         return build();
     }
 
     public Card ofSpades() {
-        this.suit = "Spades";
+        this.suit = Suit.SPADES;
         return build();
     }
 
     public Card build() {
-        return new Card(rank, rankNumeric, suit);
+        return new Card(rank, suit);
     }
 }
