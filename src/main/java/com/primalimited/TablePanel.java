@@ -130,7 +130,6 @@ public class TablePanel extends JPanel {
         hand.addAll(board);
         HandEvaluator handEvaluator = new HandEvaluator();
         HandRank handRank = handEvaluator.evaluateHand(hand);
-        System.out.println("Hand Rank: " + handRank);
         return handRank;
     }
 

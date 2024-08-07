@@ -7,8 +7,6 @@ public class HandEvaluator {
     public HandRank evaluateHand(List<Card> _cards) {
         List<Card> cards = new ArrayList<>(_cards);
 
-        System.out.println("Evaluating cards: " + Arrays.toString(cards.toArray()));
-
         if (isRoyalFlush(cards)) {
             return HandRank.ROYAL_FLUSH;
         }
