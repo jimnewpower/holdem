@@ -81,7 +81,7 @@ public class HandEvaluator {
             case STRAIGHT_FLUSH:
                 return "Straight Flush";
             case FOUR_OF_A_KIND:
-                return "Four of a Kind";
+                return "Four of a Kind, " + getFourOfAKindRank(hand) + "s";
             case FULL_HOUSE:
                 return getFullHouseDescription(hand);
             case FLUSH:
@@ -95,7 +95,7 @@ public class HandEvaluator {
             case STRAIGHT:
                 return "Straight, " + Rank.fromInt(getHighestCardRankInStraight(hand)).getRank() + " high";
             case THREE_OF_A_KIND:
-                return "Three of a Kind";
+                return "Three of a Kind, " + getThreeOfAKindRank(hand).getRank() + "s";
             case TWO_PAIR:
                 return "Two Pair, " + Rank.fromInt(getTwoPairsHighestRank(hand)).getRank() + "s over " + Rank.fromInt(getTwoPairsLowestRank(hand)).getRank() + "s";
             case ONE_PAIR:

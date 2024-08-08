@@ -5,7 +5,14 @@ import java.awt.*;
 
 public class GameFrame extends JFrame {
 
-    TablePanel tablePanel = new TablePanel();
+    private TablePanel tablePanel = new TablePanel();
+
+    private Game game = new Game(6);
+
+    private enum State {
+        PREFLOP, FLOP, TURN, RIVER
+    };
+    private State state = State.PREFLOP;
 
     public GameFrame(JButton dealButton) {
         setTitle("Game");
@@ -18,6 +25,28 @@ public class GameFrame extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
         buttonPanel.add(dealButton);
         setVisible(true);
+    }
+
+    public void deal() {
+        switch (state) {
+            case PREFLOP:
+                game.dealHoleCards();
+                state = State.FLOP;
+                break;
+            case FLOP:
+                game.dealFlop();
+                state = State.TURN;
+                break;
+            case TURN:
+                game.dealTurn();
+                state = State.RIVER;
+                break;
+            case RIVER:
+                game.dealRiver();
+                state = State.PREFLOP;
+                break;
+        }
+        tablePanel.updateContents(game.getBoard(), game.getPlayerCards());
     }
 
     public void redeal() {

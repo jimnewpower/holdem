@@ -13,8 +13,45 @@ public class Game {
     private List<Card> board;
     private List<Hole> playerCards;
 
+    private Deck deckOfCards = new Deck();
+
     public Game(int nPlayers) {
         this.nPlayers = nPlayers;
+    }
+
+    public void dealHoleCards() {
+        deckOfCards = new Deck();
+        deckOfCards.shuffle();
+        this.board = new ArrayList<>();
+
+        Map<Integer, Card> dealt = new HashMap<>();
+        for (int player = 0; player < nPlayers; player++) {
+            dealt.put(player, deckOfCards.deal());
+        }
+        Map<Integer, Hole> playerCardsMap = new HashMap<>();
+        for (int player = 0; player < nPlayers; player++) {
+            Hole hole = new Hole(dealt.get(player), deckOfCards.deal());
+            playerCardsMap.put(player, hole);
+        }
+        playerCards = new ArrayList<Hole>();
+        for (int player = 0; player < nPlayers; player++) {
+            playerCards.add(playerCardsMap.get(player));
+        }
+    }
+
+    public void dealFlop() {
+        List<Card> flop = deckOfCards.flop();
+        this.board.addAll(flop);
+    }
+
+    public void dealTurn() {
+        Card turn = deckOfCards.turn();
+        this.board.add(turn);
+    }
+
+    public void dealRiver() {
+        Card river = deckOfCards.river();
+        this.board.add(river);
     }
 
     public void dealGame() {

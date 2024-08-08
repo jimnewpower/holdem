@@ -146,6 +146,17 @@ public class TablePanel extends JPanel {
 
     private void drawBoardCards(Graphics g) {
         if (board == null || board.isEmpty()) {
+            int midX = this.getWidth() / 2 - BOARD_CARD_SPACING * 4;
+            int midY = this.getHeight() / 2;
+            Dimension boardCardDimension = getBoardCardDimension();
+            int cardWidth = boardCardDimension.width;
+            int cardHeight = boardCardDimension.height;
+            int boardWidth = 3 * cardWidth;
+            for (int i = 0; i < 3; i++) {
+                ImageIcon icon = images.createScaledImageIconWithWhiteBackground("/images/png/kem-cardback.png", cardWidth, cardHeight);
+                g.drawImage(icon.getImage(), midX - boardWidth / 2, midY - cardHeight / 2, this);
+                midX += cardWidth + BOARD_CARD_SPACING * 2;
+            }
             return;
         }
 

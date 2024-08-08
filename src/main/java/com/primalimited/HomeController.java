@@ -93,7 +93,7 @@ public class HomeController implements Controller {
                 JButton dealButton = new JButton("Deal");
                 GameFrame gameFrame = new GameFrame(dealButton);
                 dealButton.addActionListener(e1 -> {
-                    gameFrame.redeal();
+                    gameFrame.deal();
                 });
             });
         });
