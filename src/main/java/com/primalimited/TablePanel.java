@@ -127,31 +127,7 @@ public class TablePanel extends JPanel {
 
     private String getHandLabel(HandRank handRank, Hole hole) {
         HandEvaluator handEvaluator = new HandEvaluator();
-        List<Card> hand = buildHand(hole);
-        switch (handRank) {
-            case STRAIGHT_FLUSH:
-                return "Straight Flush";
-            case FOUR_OF_A_KIND:
-                return "Four of a Kind";
-            case FULL_HOUSE:
-                return "Full House";
-            case FLUSH:
-                Suit suit = handEvaluator.getFlushSuit(hand);
-                int high = handEvaluator.getHighestCardRankInFlush(hand);
-                return suit.getName() + " Flush, " + Rank.fromInt(high).getRank() + " high";
-            case STRAIGHT:
-                int rank = handEvaluator.getHighestCardRankInStraight(hand);
-                return "Straight (" + Rank.fromInt(rank).getRank() + " high)";
-            case THREE_OF_A_KIND:
-                return "Three of a Kind";
-            case TWO_PAIR:
-                return "Two Pair";
-            case ONE_PAIR:
-                return "Pair";
-            case HIGH_CARD:
-                return "High Card";
-        }
-        return handRank.toString();
+        return handEvaluator.getHandLabel(hole, board);
     }
 
     private HandRank evaluateHand(Hole hole) {

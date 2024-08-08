@@ -97,4 +97,13 @@ public class Hole {
             return true;
         return false;
     }
+
+    public Rank getHighestRankForSuit(Suit suit) {
+        if (card1.getSuit().equals(suit) && card1.getRankNumeric() > card2.getRankNumeric()) {
+            return card1.getRank();
+        } else if (card2.getSuit().equals(suit)) {
+            return card2.getRank();
+        }
+        return null;
+    }
 }

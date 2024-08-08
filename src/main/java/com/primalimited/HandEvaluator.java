@@ -56,22 +56,61 @@ public class HandEvaluator {
             case FOUR_OF_A_KIND:
                 return getFourOfAKindRank(cards);
             case FULL_HOUSE:
-                return getThreeOfAKindRank(cards) + getPairRank(cards);
+                return getThreeOfAKindRank(cards).getRankNumeric()*3 + getPairRank(cards).getRankNumeric()*2;
             case FLUSH:
                 return getFlushTotalRank(cards);
             case STRAIGHT:
                 return getHighestCardRankInStraight(cards);
             case THREE_OF_A_KIND:
-                return getThreeOfAKindRank(cards);
+                return getThreeOfAKindRank(cards).getRankNumeric();
             case TWO_PAIR:
                 return getTwoPairsHighestRank(cards);
             case ONE_PAIR:
-                return getPairRank(cards);
+                return getPairRank(cards).getRankNumeric();
             case HIGH_CARD:
                 return getHighestCard(cards).getRankNumeric();
             default:
                 throw new IllegalArgumentException("Unknown hand rank: " + handRank);
         }
+    }
+
+    public String getHandLabel(Hole hole, List<Card> board) {
+        List<Card> hand = buildHand(hole, board);
+        HandRank handRank = evaluateHand(hand);
+        switch (handRank) {
+            case STRAIGHT_FLUSH:
+                return "Straight Flush";
+            case FOUR_OF_A_KIND:
+                return "Four of a Kind";
+            case FULL_HOUSE:
+                return getFullHouseDescription(hand);
+            case FLUSH:
+                Suit suit = getFlushSuit(hand);
+                Rank rank = hole.getHighestRankForSuit(suit);
+                if (rank == null) {
+                    int high = getHighestCardRankInFlush(hand);
+                    rank = Rank.fromInt(high);
+                }
+                return suit.getName() + " Flush, " + rank.getRank() + " high";
+            case STRAIGHT:
+                return "Straight, " + Rank.fromInt(getHighestCardRankInStraight(hand)).getRank() + " high";
+            case THREE_OF_A_KIND:
+                return "Three of a Kind";
+            case TWO_PAIR:
+                return "Two Pair, " + Rank.fromInt(getTwoPairsHighestRank(hand)).getRank() + "s over " + Rank.fromInt(getTwoPairsLowestRank(hand)).getRank() + "s";
+            case ONE_PAIR:
+                return "Pair of " + ((getPairRank(hand) == Rank.SIX) ? "Sixes" : getPairRank(hand).getRank() + "s");
+            case HIGH_CARD:
+                return "High Card, " + getHighestCard(hand).getRank().getRank() + " high";
+        }
+        return handRank.toString();
+    }
+
+    private List<Card> buildHand(Hole hole, List<Card> board) {
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+        return hand;
     }
 
     private Card getHighestCard(List<Card> cards) {
@@ -124,8 +163,8 @@ public class HandEvaluator {
             }
         }
 
-        // Check if there are exactly one pair
-        return pairCount == 1;
+        // Check if there is at least one
+        return pairCount >= 1;
     }
 
     public boolean containsTwoPairs(List<Card> cards) {
@@ -147,6 +186,24 @@ public class HandEvaluator {
 
         // Check if there are at least two pairs (there could be 3 pairs with 7 cards)
         return pairCount >= 2;
+    }
+
+    public boolean isFullHouse(List<Card> cards) {
+        return isThreeOfAKind(cards) && containsPair(cards);
+    }
+
+    public String getFullHouseDescription(List<Card> cards) {
+        if (!isFullHouse(cards)) {
+            throw new IllegalArgumentException("cards must be a full house");
+        }
+
+        Rank threeOfAKindRank = getThreeOfAKindRank(cards);
+        Rank pairRank = getPairRank(cards);
+
+        String description = "Full House, ";
+        description += threeOfAKindRank.getRank() + "s full of ";
+        description += pairRank.getRank() + "s";
+        return description;
     }
 
     public int getTwoPairsHighestRank(List<Card> cards) {
@@ -171,6 +228,30 @@ public class HandEvaluator {
         }
 
         return highestRank;
+    }
+
+    public int getTwoPairsLowestRank(List<Card> cards) {
+        if (!containsTwoPairs(cards)) {
+            throw new IllegalArgumentException("cards must contain two pairs");
+        }
+
+        Map<Rank, Integer> rankCount = new HashMap<>();
+
+        // Count the occurrences of each rank
+        for (Card card : cards) {
+            Rank rank = card.getRank();
+            rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
+        }
+
+        // Count how many ranks appear exactly two times
+        int lowestRank = 15;
+        for (Rank rank : rankCount.keySet()) {
+            if (rankCount.get(rank) == 2 && rank.getRankNumeric() < lowestRank) {
+                lowestRank = rank.getRankNumeric();
+            }
+        }
+
+        return lowestRank;
     }
 
     public int getFourOfAKindRank(List<Card> cards) {
@@ -199,7 +280,7 @@ public class HandEvaluator {
         throw new IllegalArgumentException("cards must contain four of a kind");
     }
 
-    public int getThreeOfAKindRank(List<Card> cards) {
+    public Rank getThreeOfAKindRank(List<Card> cards) {
         Objects.requireNonNull(cards, "cards must not be null");
         if (cards.isEmpty()) {
             throw new IllegalArgumentException("cards must not be empty");
@@ -208,24 +289,36 @@ public class HandEvaluator {
             throw new IllegalArgumentException("cards must contain three of a kind");
         }
 
-        Map<Integer, Integer> rankCount = new HashMap<>();
+        Map<Rank, Integer> rankCount = new HashMap<>();
 
         // Count the occurrences of each rank
         for (Card card : cards) {
-            rankCount.put(card.getRankNumeric(), rankCount.getOrDefault(card.getRankNumeric(), 0) + 1);
+            Rank rank = card.getRank();
+            rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
         }
 
         // Find the rank that appears exactly three times
-        for (Map.Entry<Integer, Integer> entry : rankCount.entrySet()) {
+        List<Rank> threeOfAKindRanks = new ArrayList<>();
+        for (Map.Entry<Rank, Integer> entry : rankCount.entrySet()) {
             if (entry.getValue() == 3) {
-                return entry.getKey();
+                threeOfAKindRanks.add(entry.getKey());
             }
         }
 
-        throw new IllegalArgumentException("cards must contain three of a kind");
+        if (threeOfAKindRanks.isEmpty()) {
+            throw new IllegalArgumentException("cards must contain three of a kind");
+        }
+
+        if (threeOfAKindRanks.size() == 1) {
+            return threeOfAKindRanks.get(0);
+        }
+
+        // Sort the three of a kind ranks in descending order
+        threeOfAKindRanks.sort((r1, r2) -> r2.getRankNumeric() - r1.getRankNumeric());
+        return threeOfAKindRanks.get(0);
     }
 
-    public int getPairRank(List<Card> cards) {
+    public Rank getPairRank(List<Card> cards) {
         Objects.requireNonNull(cards, "cards must not be null");
         if (cards.isEmpty()) {
             throw new IllegalArgumentException("cards must not be empty");
@@ -234,21 +327,33 @@ public class HandEvaluator {
             throw new IllegalArgumentException("cards must contain a pair");
         }
 
-        Map<Integer, Integer> rankCount = new HashMap<>();
+        Map<Rank, Integer> rankCount = new HashMap<>();
 
         // Count the occurrences of each rank
         for (Card card : cards) {
-            rankCount.put(card.getRankNumeric(), rankCount.getOrDefault(card.getRankNumeric(), 0) + 1);
+            Rank rank = card.getRank();
+            rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
         }
 
         // Find the rank that appears exactly twice
-        for (Map.Entry<Integer, Integer> entry : rankCount.entrySet()) {
+        List<Rank> pairRanks = new ArrayList<>();
+        for (Map.Entry<Rank, Integer> entry : rankCount.entrySet()) {
             if (entry.getValue() == 2) {
-                return entry.getKey();
+                pairRanks.add(entry.getKey());
             }
         }
 
-        throw new IllegalArgumentException("cards must contain a pair");
+        if (pairRanks.isEmpty()) {
+            throw new IllegalArgumentException("cards must contain exactly one pair");
+        }
+
+        if (pairRanks.size() == 1) {
+            return pairRanks.get(0);
+        }
+
+        // Sort the pair ranks in descending order
+        pairRanks.sort((r1, r2) -> r2.getRankNumeric() - r1.getRankNumeric());
+        return pairRanks.get(0);
     }
 
     public boolean isFourOfAKind(List<Card> cards) {

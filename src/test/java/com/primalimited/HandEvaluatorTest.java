@@ -312,4 +312,23 @@ class HandEvaluatorTest {
 
         assertEquals(13, handEvaluator.getHighestCardRankInStraight(hand));
     }
+
+    @Test
+    void fullHouse() {
+        Hole hole = new Hole(Ace().ofClubs(), Ace().ofDiamonds());
+        List<Card> board = List.of(
+                Ace().ofHearts(),
+                King().ofSpades(),
+                King().ofHearts(),
+                Queen().ofDiamonds(),
+                Queen().ofClubs()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.FULL_HOUSE, handRank);
+    }
 }
