@@ -291,4 +291,25 @@ class HandEvaluatorTest {
 
         assertEquals(14, handEvaluator.getHighestCardRankInFlush(hand));
     }
+
+    @Test
+    void testStraight() {
+        Hole hole = new Hole(Queen().ofClubs(), King().ofClubs());
+        List<Card> board = List.of(
+                Nine().ofClubs(),
+                Jack().ofSpades(),
+                Queen().ofDiamonds(),
+                Two().ofHearts(),
+                Ten().ofDiamonds()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.STRAIGHT, handRank);
+
+        assertEquals(13, handEvaluator.getHighestCardRankInStraight(hand));
+    }
 }

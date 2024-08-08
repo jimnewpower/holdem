@@ -461,7 +461,8 @@ public class HandEvaluator {
         for (int i = 0; i < cards.size(); i++) {
             ranks[i] = cards.get(i).getRankNumeric();
         }
-        java.util.Arrays.sort(ranks);
+        ranks = removeDuplicates(ranks);
+        Arrays.sort(ranks);
 
         return findHighestInSequenceOfFiveOrMore(ranks);
     }
@@ -506,7 +507,37 @@ public class HandEvaluator {
             }
         }
 
+        if (highestValue == Integer.MIN_VALUE && sortedArray[sortedArray.length - 1] == 14) {
+            int[] aceLow = Arrays.copyOf(sortedArray, sortedArray.length);
+            findAndReplace(aceLow, 14, 1);
+            Arrays.sort(aceLow);
+            return findHighestInSequenceOfFiveOrMore(aceLow);
+        }
+
         return highestValue == Integer.MIN_VALUE ? -1 : highestValue;
+    }
+
+    private static int[] removeDuplicates(int[] array) {
+        Set<Integer> set = new HashSet<>();
+        for (int value : array) {
+            set.add(value);
+        }
+
+        int[] result = new int[set.size()];
+        int index = 0;
+        for (int value : set) {
+            result[index++] = value;
+        }
+
+        return result;
+    }
+
+    private static void findAndReplace(int[] array, int oldValue, int newValue) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == oldValue) {
+                array[i] = newValue;
+            }
+        }
     }
 
     public int getFlushTotalRank(List<Card> cards) {

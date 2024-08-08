@@ -106,19 +106,19 @@ public class TablePanel extends JPanel {
 
             HandRank handRank = evaluateHand(hole);
 
-            Font font = g.getFont().deriveFont(Font.PLAIN, 16);
+            Font font = g.getFont().deriveFont(Font.PLAIN, 14);
             g.setFont(font);
             FontMetrics fontMetrics = g.getFontMetrics(g.getFont());
             String label = getHandLabel(handRank, hole);
             Rectangle2D rect = fontMetrics.getStringBounds(label, g);
             int buffer = 4;
             int buffer2 = buffer * 2;
-            int labelX = x + cardWidth + BOARD_CARD_SPACING - (int)rect.getWidth()/2 - buffer;
-            int labelY = y + cardHeight + BOARD_CARD_SPACING * 2;
+            int labelX = x + cardWidth + BOARD_CARD_SPACING * 2 - (int)rect.getWidth()/2 - buffer;
+            int labelY = y + cardHeight + BOARD_CARD_SPACING * 3;
+//            g.setColor(Color.GREEN.darker().darker().darker());
+//            g.fillRect(labelX - buffer, labelY - buffer, (int) rect.getWidth() + buffer2, (int) rect.getHeight() + buffer2);
             g.setColor(Color.WHITE);
-            g.fillRect(labelX - buffer, labelY - buffer, (int) rect.getWidth() + buffer2, (int) rect.getHeight() + buffer2);
-            g.setColor(Color.BLACK);
-            g.drawRect(labelX - buffer, labelY - buffer, (int) rect.getWidth() + buffer2, (int) rect.getHeight() + buffer2);
+//            g.drawRect(labelX - buffer, labelY - buffer, (int) rect.getWidth() + buffer2, (int) rect.getHeight() + buffer2);
             g.drawString(label, labelX, labelY + fontMetrics.getAscent());
 
             handCount++;
@@ -173,7 +173,7 @@ public class TablePanel extends JPanel {
             return;
         }
 
-        int midX = this.getWidth() / 2 - BOARD_CARD_SPACING * 2;
+        int midX = this.getWidth() / 2 - BOARD_CARD_SPACING * 4;
         int midY = this.getHeight() / 2;
         Dimension boardCardDimension = getBoardCardDimension();
         int cardWidth = boardCardDimension.width;
@@ -182,7 +182,7 @@ public class TablePanel extends JPanel {
         for (Card card : board) {
             ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), cardWidth, cardHeight);
             g.drawImage(icon.getImage(), midX - boardWidth / 2, midY - cardHeight / 2, this);
-            midX += cardWidth + BOARD_CARD_SPACING;
+            midX += cardWidth + BOARD_CARD_SPACING * 2;
         }
     }
 

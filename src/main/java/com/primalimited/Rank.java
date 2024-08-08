@@ -32,6 +32,12 @@ public enum Rank {
     }
 
     public static Rank fromInt(int rank) {
+        if (rank < 1 || rank > 14) {
+            return null;
+        }
+        if (rank == 1) {
+            return Rank.ACE;
+        }
         for (Rank r : Rank.values()) {
             if (r.getRankNumeric() == rank) {
                 return r;
