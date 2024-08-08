@@ -32,6 +32,8 @@ public class HoleRankingsQuiz extends JFrame {
     private void initUI() {
         setLayout(new BorderLayout());
 
+        setIconImage(new ImageIcon(getClass().getResource("/images/png/poker_chip_100.png")).getImage());
+
         add(topPanel, BorderLayout.NORTH);
         topPanel.add(new JLabel("Select the best hole ranking"));
 

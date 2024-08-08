@@ -30,4 +30,13 @@ public enum Rank {
     public int getRankNumeric() {
         return rankNumeric;
     }
+
+    public static Rank fromInt(int rank) {
+        for (Rank r : Rank.values()) {
+            if (r.getRankNumeric() == rank) {
+                return r;
+            }
+        }
+        return null;
+    }
 }

@@ -46,6 +46,8 @@ public class HomeController implements Controller {
         this.frame = new JFrame("Texas Hold'em");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        frame.setIconImage(new ImageIcon(getClass().getResource("/images/png/poker_chip_100.png")).getImage());
+
         frame.setLayout(new BorderLayout());
         frame.add(new JLabel("Welcome to Texas Hold'em"), BorderLayout.NORTH);
         JPanel buttonPanel = new JPanel();

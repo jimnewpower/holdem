@@ -20,6 +20,8 @@ public class HoleRankingsView extends JFrame {
         setSize((CARD_WIDTH + 40) * 20 + 64, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        setIconImage(new ImageIcon(getClass().getResource("/images/png/poker_chip_100.png")).getImage());
+
         cardsPanel.setLayout(new GridLayout(0, 10, 10, 10));
 
         JScrollPane scrollPane = new JScrollPane(cardsPanel);

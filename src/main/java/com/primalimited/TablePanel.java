@@ -38,7 +38,7 @@ public class TablePanel extends JPanel {
 
     private void init() {
         try {
-            backgroundImage = ImageIO.read(getClass().getResource("/images/png/poker_table.png"));
+            backgroundImage = ImageIO.read(getClass().getResource("/images/png/poker_felt.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -109,7 +109,8 @@ public class TablePanel extends JPanel {
             Font font = g.getFont().deriveFont(Font.PLAIN, 16);
             g.setFont(font);
             FontMetrics fontMetrics = g.getFontMetrics(g.getFont());
-            Rectangle2D rect = fontMetrics.getStringBounds(handRank.toString(), g);
+            String label = getHandLabel(handRank, hole);
+            Rectangle2D rect = fontMetrics.getStringBounds(label, g);
             int buffer = 4;
             int buffer2 = buffer * 2;
             int labelX = x + cardWidth + BOARD_CARD_SPACING - (int)rect.getWidth()/2 - buffer;
@@ -118,19 +119,53 @@ public class TablePanel extends JPanel {
             g.fillRect(labelX - buffer, labelY - buffer, (int) rect.getWidth() + buffer2, (int) rect.getHeight() + buffer2);
             g.setColor(Color.BLACK);
             g.drawRect(labelX - buffer, labelY - buffer, (int) rect.getWidth() + buffer2, (int) rect.getHeight() + buffer2);
-            g.drawString(handRank.toString(), labelX, labelY + fontMetrics.getAscent());
+            g.drawString(label, labelX, labelY + fontMetrics.getAscent());
 
             handCount++;
         }
     }
 
+    private String getHandLabel(HandRank handRank, Hole hole) {
+        HandEvaluator handEvaluator = new HandEvaluator();
+        List<Card> hand = buildHand(hole);
+        switch (handRank) {
+            case STRAIGHT_FLUSH:
+                return "Straight Flush";
+            case FOUR_OF_A_KIND:
+                return "Four of a Kind";
+            case FULL_HOUSE:
+                return "Full House";
+            case FLUSH:
+                Suit suit = handEvaluator.getFlushSuit(hand);
+                int high = handEvaluator.getHighestCardRankInFlush(hand);
+                return suit.getName() + " Flush, " + Rank.fromInt(high).getRank() + " high";
+            case STRAIGHT:
+                int rank = handEvaluator.getHighestCardRankInStraight(hand);
+                return "Straight (" + Rank.fromInt(rank).getRank() + " high)";
+            case THREE_OF_A_KIND:
+                return "Three of a Kind";
+            case TWO_PAIR:
+                return "Two Pair";
+            case ONE_PAIR:
+                return "Pair";
+            case HIGH_CARD:
+                return "High Card";
+        }
+        return handRank.toString();
+    }
+
     private HandRank evaluateHand(Hole hole) {
-        List<Card> hand = new ArrayList<>();
-        hand.addAll(hole.getCards());
-        hand.addAll(board);
+        List<Card> hand = buildHand(hole);
         HandEvaluator handEvaluator = new HandEvaluator();
         HandRank handRank = handEvaluator.evaluateHand(hand);
         return handRank;
+    }
+
+    private List<Card> buildHand(Hole hole) {
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+        return hand;
     }
 
     private void drawBoardCards(Graphics g) {

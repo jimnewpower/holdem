@@ -424,7 +424,7 @@ public class HandEvaluator {
 
                 if (currentCard.getRankNumeric() == previousCard.getRankNumeric() + 1) {
                     consecutiveCount++;
-                    if (consecutiveCount >= 4) {
+                    if (consecutiveCount >= 4 && currentCard.getRank() == Rank.FIVE) {
                         return true;
                     }
                 } else {
@@ -435,6 +435,21 @@ public class HandEvaluator {
         }
 
         return false;
+    }
+
+    public int getHighestCardRankInFlush(List<Card> cards) {
+        if (!isFlush(cards)) {
+            throw new IllegalArgumentException("cards must be a flush");
+        }
+
+        Suit suit = getFlushSuit(cards);
+        int highestRank = 0;
+        for (Card card : cards) {
+            if (card.getSuit().equals(suit)) {
+                highestRank = Math.max(highestRank, card.getRankNumeric());
+            }
+        }
+        return highestRank;
     }
 
     public int getHighestCardRankInStraight(List<Card> cards) {

@@ -252,4 +252,43 @@ class HandEvaluatorTest {
         assertEquals(HandRank.STRAIGHT, handRank);
     }
 
+    @Test
+    void specificHand6() {
+        Hole hole = new Hole(Queen().ofDiamonds(), Two().ofDiamonds());
+        List<Card> board = List.of(
+                Ace().ofSpades(),
+                King().ofSpades(),
+                Queen().ofSpades(),
+                Seven().ofDiamonds(),
+                Jack().ofDiamonds()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.ONE_PAIR, handRank);
+    }
+
+    @Test
+    void testFlush() {
+        Hole hole = new Hole(Ace().ofSpades(), Two().ofSpades());
+        List<Card> board = List.of(
+                Three().ofSpades(),
+                Four().ofSpades(),
+                Five().ofSpades(),
+                Six().ofDiamonds(),
+                Seven().ofHearts()
+        );
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.FLUSH, handRank);
+
+        assertEquals(14, handEvaluator.getHighestCardRankInFlush(hand));
+    }
 }

@@ -32,6 +32,8 @@ public class CardDisplay extends JFrame {
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
+        setIconImage(new ImageIcon(getClass().getResource("/images/png/poker_chip_100.png")).getImage());
+
         JPanel cardsPanel = new JPanel();
         add(cardsPanel, BorderLayout.CENTER);
 

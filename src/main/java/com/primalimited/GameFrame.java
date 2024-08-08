@@ -11,9 +11,12 @@ public class GameFrame extends JFrame {
         setTitle("Game");
         setSize(1290, 624);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setIconImage(new ImageIcon(getClass().getResource("/images/png/poker_chip_100.png")).getImage());
         setLayout(new BorderLayout());
         add(tablePanel, BorderLayout.CENTER);
-        add(dealButton, BorderLayout.SOUTH);
+        JPanel buttonPanel = new JPanel();
+        add(buttonPanel, BorderLayout.SOUTH);
+        buttonPanel.add(dealButton);
         setVisible(true);
     }
 
