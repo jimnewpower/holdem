@@ -26,6 +26,8 @@ public class TablePanel extends JPanel {
     private JPanel boardPanel = new JPanel();
     private JPanel playerPanel = new JPanel();
 
+    private boolean showBacks = true;
+
     public TablePanel() {
         init();
     }
@@ -37,6 +39,7 @@ public class TablePanel extends JPanel {
     }
 
     private void init() {
+        this.showBacks = Math.random() <= 0.5 ? true : false;
         try {
             backgroundImage = ImageIO.read(getClass().getResource("/images/png/poker_felt.png"));
         } catch (IOException e) {
@@ -97,9 +100,9 @@ public class TablePanel extends JPanel {
             for (Card card : hole.getCards()) {
                 ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), cardWidth, cardHeight);
                 if (count % 2 == 0) {
-                    g.drawImage(icon.getImage(), x, y, this);
+                    drawCard(g, icon, x, y, cardWidth, cardHeight);
                 } else {
-                    g.drawImage(icon.getImage(), x + cardWidth + (BOARD_CARD_SPACING * 2), y, this);
+                    drawCard(g, icon, x + cardWidth + (BOARD_CARD_SPACING * 2), y, cardWidth, cardHeight);
                 }
                 count++;
             }
@@ -152,14 +155,27 @@ public class TablePanel extends JPanel {
         int cardHeight = boardCardDimension.height;
 
         if ((board == null || board.isEmpty()) && (playerCards == null || playerCards.isEmpty())) {
-            ImageIcon icon = images.createScaledImageIconWithWhiteBackground("/images/png/kem-cardback.png", cardWidth, cardHeight);
             int boardWidth = this.getWidth() - (this.getWidth() / 10);
             double x = midX - boardWidth / 2;
             int y = midY - cardHeight / 2;
             double xIncrement = boardWidth / 52.0;
-            for (int i = 0; i < 52; i++) {
-                g.drawImage(icon.getImage(), (int)Math.round(x), y, this);
-                x += xIncrement;
+
+            if (showBacks) {
+                // Show card backs
+                ImageIcon icon = images.createScaledImageIconWithWhiteBackground("/images/png/kem-cardback.png", cardWidth, cardHeight);
+                for (int i = 0; i < 52; i++) {
+                    drawCard(g, icon, (int)Math.round(x), y, cardWidth, cardHeight);
+                    x += xIncrement;
+                }
+            } else {
+                // Show card fronts (new deck)
+                Deck newDeck = new Deck();
+                List<Card> cards = newDeck.getDeck();
+                for (Card card : cards) {
+                    ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), cardWidth, cardHeight);
+                    drawCard(g, icon, (int)Math.round(x), y, cardWidth, cardHeight);
+                    x += xIncrement;
+                }
             }
             return;
         }
@@ -173,7 +189,7 @@ public class TablePanel extends JPanel {
         if (board == null || board.isEmpty()) {
             ImageIcon icon = images.createScaledImageIconWithWhiteBackground("/images/png/kem-cardback.png", cardWidth, cardHeight);
             for (int i = 0; i < 5; i++) {
-                g.drawImage(icon.getImage(), x, y, this);
+                drawCard(g, icon, (int)Math.round(x), y, cardWidth, cardHeight);
                 x += xIncrement;
             }
             return;
@@ -181,16 +197,33 @@ public class TablePanel extends JPanel {
 
         for (Card card : board) {
             ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), cardWidth, cardHeight);
-            g.drawImage(icon.getImage(), x, y, this);
+            drawCard(g, icon, x, y, cardWidth, cardHeight);
             x += xIncrement;
         }
 
         ImageIcon icon = images.createScaledImageIconWithWhiteBackground("/images/png/kem-cardback.png", cardWidth, cardHeight);
         for (int i = board.size(); i < 5; i++) {
-            g.drawImage(icon.getImage(), x, y, this);
+            drawCard(g, icon, x, y, cardWidth, cardHeight);
             x += xIncrement;
         }
 
+    }
+
+    private void drawCard(Graphics g, ImageIcon icon, int x, int y, int cardWidth, int cardHeight) {
+        g.drawImage(icon.getImage(), x, y, this);
+        g.setColor(Color.lightGray);
+        g.drawRect(x, y, cardWidth, cardHeight);
+
+        int shadow = 1;
+        // Add a shadow to the bottom and right edges for the 3D effect
+        g.setColor(new Color(150, 150, 150, 100)); // Shadow color with transparency
+        g.fillRect(x + cardWidth, y + shadow, shadow, cardHeight); // Right shadow
+        g.fillRect(x + shadow, y + cardHeight, cardWidth, shadow); // Bottom shadow
+
+        // Add a highlight to the top and left edges for the 3D effect
+        g.setColor(new Color(255, 255, 255, 100)); // Highlight color with transparency
+        g.fillRect(x - shadow, y - shadow, cardWidth, shadow); // Top highlight
+        g.fillRect(x - shadow, y - shadow, shadow, cardHeight); // Left highlight
     }
 
     private void drawTableBackground(Graphics g) {

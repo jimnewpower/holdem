@@ -1,7 +1,6 @@
 package com.primalimited;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Simulator implements Runnable {
 
@@ -23,37 +22,74 @@ public class Simulator implements Runnable {
         HandEvaluator handEvaluator = new HandEvaluator();
         HoleCardRanks holeCardRanks = new HoleCardRanks();
 
-        List<Hole> all = holeCardRanks.getRanked();
+        List<Hole> all = List.of(holeCardRanks.getRanked().get(0));
         for (Hole heroHole : all) {
+            System.out.println("Hero: " + heroHole);
+            int winCount = 0;
+            int tieCount = 0;
+            int lossCount = 0;
             for (int i = 0; i < nHands; i++) {
                 Deck deckOfCards = new Deck();
-                deckOfCards.shuffle();
-                List<Card> deck = deckOfCards.getDeck();
+                LinkedList<Card> deck = deckOfCards.shuffle();
+
                 deck.removeAll(heroHole.getCards());
 
-                List<Hole> holes = holeCardRanks.getRandom(nPlayers-1);
-                for (Hole villanHoles : holes) {
-                    deck.removeAll(villanHoles.getCards());
+                Map<Integer, Card> playerCardMap = new HashMap<>();
+                for (int j = 0; j < nPlayers - 1; j++) {
+                    playerCardMap.put(j, deck.poll());
                 }
 
-                List<Card> flop = deckOfCards.flop();
-                Card turn = deckOfCards.turn();
-                Card river = deckOfCards.river();
+                List<Hole> holes = new ArrayList<>(nPlayers-1);
+                for (int j = 0; j < nPlayers - 1; j++) {
+                    Card card = deck.poll();
+                    holes.add(new Hole(playerCardMap.get(j), card));
+                }
 
+                // burn
+                List<Card> flop = new ArrayList<>();
+                deck.poll(); // burn card
+                flop.add(deck.poll());
+                flop.add(deck.poll());
+                flop.add(deck.poll());
+
+                deck.poll(); // burn card
+                Card turn = deck.poll();
+
+                deck.poll(); // burn card
+                Card river = deck.poll();
+
+                Board board = new Board(flop, turn, river);
+
+                HandRank heroRank = null;
+                List<HandRank> villainRanks = new ArrayList<>();
                 for (int player = 0; player < nPlayers; player++) {
-                    List<Card> hand = player == 0 ? buildHand(heroHole, flop, turn, river) : buildHand(holes.get(player-1), flop, turn, river);
-                    HandRank handRank = handEvaluator.evaluateHand(hand);
+                    List<Card> hand = player == 0 ? buildHand(heroHole, board) : buildHand(holes.get(player-1), board);
+                    if (player == 0) {
+                        heroRank = handEvaluator.evaluateHand(hand);
+                    } else {
+                        villainRanks.add(handEvaluator.evaluateHand(hand));
+                    }
+                }
+
+                villainRanks.sort(new HandRankComparator());
+                HandRank topVillain = villainRanks.get(0);
+
+                if (heroRank.ordinal() > topVillain.ordinal()) {
+                    winCount++;
+                } else if (heroRank.ordinal() == topVillain.ordinal()) {
+                    tieCount++;
+                } else {
+                    lossCount++;
                 }
             }
+            System.out.println("Wins: " + winCount + " Ties: " + tieCount + " Losses: " + lossCount);
         }
     }
 
-    private List<Card> buildHand(Hole hole, List<Card> flop, Card turn, Card river) {
+    private List<Card> buildHand(Hole hole, Board board) {
         List<Card> hand = new ArrayList<>();
         hand.addAll(hole.getCards());
-        hand.addAll(flop);
-        hand.add(turn);
-        hand.add(river);
+        hand.addAll(board.getCards());
         return hand;
     }
 }

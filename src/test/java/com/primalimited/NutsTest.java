@@ -2,6 +2,7 @@ package com.primalimited;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,16 +74,25 @@ class NutsTest {
         assertEquals(1326, holes.size()); // 52 choose 2 = (52 * 51) / (2 * 1) = 1326
 
         Deck deck = new Deck();
-        deck.flop();
-        holes = nuts.findAllHoleCardCombinations(deck.getDeck());
+        LinkedList<Card> cards = deck.shuffle();
+        // flop
+        cards.poll(); // burn
+        cards.poll(); // flop card 1
+        cards.poll(); // flop card 2
+        cards.poll(); // flop card 3
+        holes = nuts.findAllHoleCardCombinations(cards);
         assertEquals(1128, holes.size()); // 48 choose 2 = (48 * 47) / (2 * 1) = 1128
 
-        deck.turn();
-        holes = nuts.findAllHoleCardCombinations(deck.getDeck());
+        // turn
+        cards.poll(); // burn
+        cards.poll(); // turn card
+        holes = nuts.findAllHoleCardCombinations(cards);
         assertEquals(1035, holes.size()); // 46 choose 2 = (46 * 45) / (2 * 1) = 1035
 
-        deck.river();
-        holes = nuts.findAllHoleCardCombinations(deck.getDeck());
+        // river
+        cards.poll(); // burn
+        cards.poll(); // river card
+        holes = nuts.findAllHoleCardCombinations(cards);
         assertEquals(946, holes.size()); // 44 choose 2 = (44 * 43) / (2 * 1) = 946
     }
 }

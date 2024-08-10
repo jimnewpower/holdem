@@ -331,4 +331,24 @@ class HandEvaluatorTest {
         HandRank handRank = handEvaluator.evaluateHand(hand);
         assertEquals(HandRank.FULL_HOUSE, handRank);
     }
+
+    @Test
+    void twoSets() {
+        Hole hole = new Hole(Jack().ofDiamonds(), Queen().ofHearts());
+        List<Card> board = List.of(
+                Queen().ofClubs(),
+                Jack().ofHearts(),
+                Queen().ofSpades(),
+                Jack().ofSpades(),
+                Ten().ofHearts()
+        );
+
+        List<Card> hand = new ArrayList<>();
+        hand.addAll(hole.getCards());
+        hand.addAll(board);
+
+        HandEvaluator handEvaluator = new HandEvaluator();
+        HandRank handRank = handEvaluator.evaluateHand(hand);
+        assertEquals(HandRank.FULL_HOUSE, handRank);
+    }
 }

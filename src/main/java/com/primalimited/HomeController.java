@@ -101,6 +101,26 @@ public class HomeController implements Controller {
         gameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
 
+        JButton shuffleButton = new JButton("Shuffle");
+        shuffleButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                JButton riffle = new JButton("Riffle");
+                JButton cut = new JButton("Cut");
+                JButton shuffle = new JButton("Simple Shuffle");
+                JButton fullShuffle = new JButton("Full Shuffle");
+                JButton reset = new JButton("Reset");
+                ShuffleView view = new ShuffleView(riffle, cut, shuffle, fullShuffle, reset);
+                riffle.addActionListener(e1 -> view.riffle());
+                cut.addActionListener(e1 -> view.cut());
+                shuffle.addActionListener(e1 -> view.shuffleSimple());
+                fullShuffle.addActionListener(e1 -> view.shuffle());
+                reset.addActionListener(e1 -> view.resetDeck());
+            });
+        });
+        buttonPanel.add(shuffleButton);
+        shuffleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
+
         frame.setSize(300, 300);
         frame.setVisible(true);
         return frame;

@@ -19,7 +19,7 @@ public class HandEvaluator {
             return HandRank.FOUR_OF_A_KIND;
         }
 
-        if (isThreeOfAKind(cards) && containsPair(cards)) {
+        if (containsTwoSets(cards) || (isThreeOfAKind(cards) && containsPair(cards))) {
             return HandRank.FULL_HOUSE;
         }
 
@@ -186,6 +186,27 @@ public class HandEvaluator {
 
         // Check if there are at least two pairs (there could be 3 pairs with 7 cards)
         return pairCount >= 2;
+    }
+
+    public boolean containsTwoSets(List<Card> cards) {
+        Map<Rank, Integer> rankCount = new HashMap<>();
+
+        // Count the occurrences of each rank
+        for (Card card : cards) {
+            Rank rank = card.getRank();
+            rankCount.put(rank, rankCount.getOrDefault(rank, 0) + 1);
+        }
+
+        // Count how many ranks appear exactly three times
+        int setCount = 0;
+        for (int count : rankCount.values()) {
+            if (count == 3) {
+                setCount++;
+            }
+        }
+
+        // Check if there are at least two sets (there could be 2 sets with 7 cards)
+        return setCount >= 2;
     }
 
     public boolean isFullHouse(List<Card> cards) {

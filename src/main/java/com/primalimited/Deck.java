@@ -3,15 +3,13 @@ package com.primalimited;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Deck {
     private List<Card> deck;
-    private List<Card> burned;
-    private List<Card> dealt;
-    private List<Card> flop;
-    private Card turn;
-    private Card river;
+
+    private int freshDeckHash;
 
     public Deck() {
         reset();
@@ -26,78 +24,91 @@ public class Deck {
             }
         }
 
-        burned = new ArrayList<>();
-        dealt = new ArrayList<>();
+        this.freshDeckHash = hashCode();
     }
 
-    public void shuffle() {
+    @Override
+    public int hashCode() {
+        final StringBuilder builder = new StringBuilder();
+        this.deck.forEach(c -> builder.append(c.toString()));
+        return builder.toString().hashCode();
+    }
+
+    public void shuffleSimple() {
+        Collections.shuffle(deck, new SecureRandom());
+    }
+
+    public LinkedList<Card> shuffle() {
         SecureRandom random = new SecureRandom();
-        Collections.shuffle(deck, random);
+        int nJavaShuffles = 0;
+        int nCuts = 0;
+        int nRiffles = 0;
+        final int min = 3;
+        // want a minimum of 3 of each type of shuffle
+        while (nJavaShuffles < min || nCuts < min || nRiffles < min) {
+            int rand = Math.abs(random.nextInt() % 3);
+            switch (rand) {
+                case 0 -> {
+                    Collections.shuffle(deck);
+                    nJavaShuffles++;
+                }
+                case 1 -> {
+                    cutDeck();
+                    nCuts++;
+                }
+                case 2 -> {
+                    riffleShuffle();
+                    nRiffles++;
+                }
+            }
+        }
+
+        return new LinkedList<>(deck);
+    }
+
+    private int randomCutIndex() {
+        int randomHalf = deck.size() / 2;
+        int randomOffset = (int)(Math.random() * 100) % 5;
+        randomOffset = Math.random() <= 0.5 ? -randomOffset : randomOffset;
+        return randomHalf + randomOffset;
+    }
+
+    public void cutDeck() {
+        int halfSize = randomCutIndex();
+
+        // Split the deck into two halves
+        List<Card> firstHalf = new ArrayList<>(deck.subList(0, halfSize));
+        List<Card> secondHalf = new ArrayList<>(deck.subList(halfSize, deck.size()));
+
+        // Reorder the deck by placing the second half before the first half
+        deck.clear();
+        deck.addAll(secondHalf);
+        deck.addAll(firstHalf);
+    }
+
+    public void riffleShuffle() {
+        int halfSize = randomCutIndex();
+
+        // Split the deck into two halves
+        List<Card> firstHalf = new ArrayList<>(deck.subList(0, halfSize));
+        List<Card> secondHalf = new ArrayList<>(deck.subList(halfSize, deck.size()));
+
+        deck.clear();
+
+        // Interleave the cards from the two halves
+        SecureRandom random = new SecureRandom();
+        while (!firstHalf.isEmpty() || !secondHalf.isEmpty()) {
+            if (!firstHalf.isEmpty() && (secondHalf.isEmpty() || random.nextBoolean())) {
+                deck.add(firstHalf.remove(0));
+            }
+            if (!secondHalf.isEmpty() && (firstHalf.isEmpty() || random.nextBoolean())) {
+                deck.add(secondHalf.remove(0));
+            }
+        }
     }
 
     public List<Card> getDeck() {
         return List.of(deck.toArray(new Card[0]));
-    }
-
-    public Card burn() {
-        Card burn = deck.remove(0);
-        burned.add(burn);
-        return burn;
-    }
-
-    public Card deal() {
-        Card card = deck.remove(0);
-        dealt.add(card);
-        return card;
-    }
-
-    public List<Card> flop() {
-        burn();
-        flop = new ArrayList<>();
-        flop.add(deal());
-        flop.add(deal());
-        flop.add(deal());
-        return Collections.unmodifiableList(flop);
-    }
-
-    public Card turn() {
-        burn();
-        turn = deal();
-        return turn;
-    }
-
-    public Card river() {
-        burn();
-        river = deal();
-        return river;
-    }
-
-    public List<Card> getFlop() {
-        return List.of(flop.toArray(new Card[0]));
-    }
-
-    public Card getTurn() {
-        return turn;
-    }
-
-    public Card getRiver() {
-        return river;
-    }
-
-    public List<Card> getBoard() {
-        List<Card> board = new ArrayList<>();
-        board.addAll(flop);
-        board.add(turn);
-        board.add(river);
-        return board;
-    }
-
-    public List<Card> getBurned() {
-        return List.of(burned.toArray(new Card[0]));
-    }
-
-    public List<Card> getDealt() {
-        return List.of(dealt.toArray(new Card[0]));
     }
 
 }

@@ -30,6 +30,7 @@ public class GameFrame extends JFrame {
     public void deal() {
         switch (state) {
             case PREFLOP:
+                game.shuffle();
                 game.dealHoleCards();
                 state = State.FLOP;
                 break;
@@ -46,12 +47,6 @@ public class GameFrame extends JFrame {
                 state = State.PREFLOP;
                 break;
         }
-        tablePanel.updateContents(game.getBoard(), game.getPlayerCards());
-    }
-
-    public void redeal() {
-        Game game = new Game(6);
-        game.dealGame();
         tablePanel.updateContents(game.getBoard(), game.getPlayerCards());
     }
 }
