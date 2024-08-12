@@ -7,6 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Deck {
+    private static final int MIN_SHUFFLE_ITERATIONS = 11;
+    private SecureRandom random = new SecureRandom();
+
     private List<Card> deck;
 
     private int freshDeckHash;
@@ -38,32 +41,32 @@ public class Deck {
         Collections.shuffle(deck, new SecureRandom());
     }
 
-    public LinkedList<Card> shuffle() {
-        SecureRandom random = new SecureRandom();
-        int nJavaShuffles = 0;
-        int nCuts = 0;
-        int nRiffles = 0;
-        final int min = 3;
-        // want a minimum of 3 of each type of shuffle
-        while (nJavaShuffles < min || nCuts < min || nRiffles < min) {
+    public LinkedList<Card> shuffle(ShuffleStats stats) {
+        final int min = MIN_SHUFFLE_ITERATIONS;
+        // want a minimum number of each type of shuffle
+        while (stats.getnJavaShuffles() < min || stats.getnCuts() < min || stats.getnRiffles() < min) {
             int rand = Math.abs(random.nextInt() % 3);
             switch (rand) {
                 case 0 -> {
                     Collections.shuffle(deck);
-                    nJavaShuffles++;
+                    stats.incrementJavaShuffles();
                 }
                 case 1 -> {
                     cutDeck();
-                    nCuts++;
+                    stats.incrementCuts();
                 }
                 case 2 -> {
                     riffleShuffle();
-                    nRiffles++;
+                    stats.incrementRiffles();
                 }
             }
         }
 
         return new LinkedList<>(deck);
+    }
+
+    public LinkedList<Card> shuffle() {
+        return shuffle(new ShuffleStats());
     }
 
     private int randomCutIndex() {

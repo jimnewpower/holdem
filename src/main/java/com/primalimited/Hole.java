@@ -36,6 +36,12 @@ public class Hole {
         return card1.getRankNumeric() + card2.getRankNumeric();
     }
 
+    public Rank getHighestRankedCard() {
+        if (card1.getRankNumeric() > card2.getRankNumeric())
+            return card1.getRank();
+        return card2.getRank();
+    }
+
     public int getHighestRank() {
         return Math.max(card1.getRankNumeric(), card2.getRankNumeric());
     }

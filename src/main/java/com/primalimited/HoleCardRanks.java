@@ -203,6 +203,12 @@ public class HoleCardRanks {
         return Collections.unmodifiableList(ranked);
     }
 
+    public List<Hole> getChenRanked() {
+        List<Hole> all = new ArrayList<>(ranked);
+        all.sort(new ChenRankingComparator());
+        return Collections.unmodifiableList(all);
+    }
+
     public List<Hole> getRandom(int n) {
         List<Hole> random = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -237,6 +243,28 @@ public class HoleCardRanks {
             }
         }
         return Collections.unmodifiableMap(random);
+    }
+
+    public Map<Hole, Integer> getRandomUniqueChenRankings(int nHoles) {
+        Map<Hole, Integer> random = new HashMap<>(nHoles);
+        SecureRandom randomizer = new SecureRandom();
+
+        int origIndex = randomizer.nextInt(ranked.size());
+        Hole hole = ranked.get(origIndex);
+        int chenRank = new ChenFormula(hole).evaluate();
+        random.put(ranked.get(origIndex), chenRank);
+
+        // add remaining random holes to map, ensuring they are not duplicates and that their rankings are within the specified range
+        while (random.size() < nHoles) {
+            int index = randomizer.nextInt(ranked.size());
+            hole = ranked.get(index);
+            chenRank = new ChenFormula(hole).evaluate();
+            if (!random.containsValue(chenRank)) {
+                random.put(hole, chenRank);
+            }
+        }
+        return Collections.unmodifiableMap(random);
+
     }
 
     public Map<Hole, Integer> getRandomMapWithinRange(int nHoles, int rankingRange, int minRank) {

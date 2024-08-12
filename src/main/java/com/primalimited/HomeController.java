@@ -49,57 +49,11 @@ public class HomeController implements Controller {
         frame.setIconImage(new ImageIcon(getClass().getResource("/images/png/poker_chip_100.png")).getImage());
 
         frame.setLayout(new BorderLayout());
-        frame.add(new JLabel("Welcome to Texas Hold'em"), BorderLayout.NORTH);
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        int gap = 8;
+        buttonPanel.setLayout(new GridLayout(3, 4, gap, gap));
         frame.add(buttonPanel, BorderLayout.CENTER);
-
-        JButton holeCardQuizButton = new JButton("Hole Card Rankings Quiz");
-        holeCardQuizButton.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                new HoleRankingsQuiz();
-            });
-        });
-        buttonPanel.add(holeCardQuizButton);
-        holeCardQuizButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
-
-        JButton randomHandsButton = new JButton("Random Hands");
-        randomHandsButton.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                Deck deck = new Deck();
-                deck.shuffle();
-                CardDisplay cardDisplay = new CardDisplay(deck);
-            });
-        });
-        buttonPanel.add(randomHandsButton);
-        randomHandsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
-
-        JButton holeRankingsButton = new JButton("Hole Card Rankings");
-        holeRankingsButton.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                new HoleRankingsView();
-            });
-        });
-        buttonPanel.add(holeRankingsButton);
-        holeRankingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
-
-        JButton gameButton = new JButton("Game");
-        gameButton.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                JButton dealButton = new JButton("Deal");
-                GameFrame gameFrame = new GameFrame(dealButton);
-                dealButton.addActionListener(e1 -> {
-                    gameFrame.deal();
-                });
-            });
-        });
-        buttonPanel.add(gameButton);
-        gameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
 
         JButton shuffleButton = new JButton("Shuffle");
         shuffleButton.addActionListener(e -> {
@@ -119,9 +73,65 @@ public class HomeController implements Controller {
         });
         buttonPanel.add(shuffleButton);
         shuffleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        buttonPanel.add(Box.createVerticalStrut(20)); // 20 pixels of space
 
-        frame.setSize(300, 300);
+        JButton chenHoleCardQuizButton = new JButton("Chen Hole Card Rankings Quiz");
+        chenHoleCardQuizButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                new ChenRankingsQuiz();
+            });
+        });
+        buttonPanel.add(chenHoleCardQuizButton);
+
+        JButton holeCardQuizButton = new JButton("Hole Card Rankings Quiz");
+        holeCardQuizButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                new HoleRankingsQuiz();
+            });
+        });
+        buttonPanel.add(holeCardQuizButton);
+
+        JButton chenHoleRankingsButton = new JButton("Chen Hole Card Rankings");
+        chenHoleRankingsButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                new ChenHoleRankingsView();
+            });
+        });
+        buttonPanel.add(chenHoleRankingsButton);
+        chenHoleRankingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton holeRankingsButton = new JButton("Hole Card Rankings");
+        holeRankingsButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                new HoleRankingsView();
+            });
+        });
+        buttonPanel.add(holeRankingsButton);
+        holeRankingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton gameButton = new JButton("Game");
+        gameButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                JButton dealButton = new JButton("Deal");
+                GameFrame gameFrame = new GameFrame(dealButton);
+                dealButton.addActionListener(e1 -> {
+                    gameFrame.deal();
+                });
+            });
+        });
+        buttonPanel.add(gameButton);
+        gameButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton randomHandsButton = new JButton("Nuts");
+        randomHandsButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                Deck deck = new Deck();
+                deck.shuffle();
+                CardDisplay cardDisplay = new CardDisplay(deck);
+            });
+        });
+        buttonPanel.add(randomHandsButton);
+
+        frame.setSize(600, 400);
         frame.setVisible(true);
         return frame;
     }

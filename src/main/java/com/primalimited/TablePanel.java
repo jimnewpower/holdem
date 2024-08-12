@@ -82,7 +82,7 @@ public class TablePanel extends JPanel {
                 this.getWidth() / 2 - cardWidth - BOARD_CARD_SPACING,
                 this.getWidth() - this.getWidth() / 4 - cardWidth - BOARD_CARD_SPACING
         };
-        int[] ys = new int[] {
+        int[] ysBelow = new int[] {
                 this.getHeight() / 3 - cardHeight,
                 this.getHeight() / 3 - cardHeight - cardHeight / 2,
                 this.getHeight() / 3 - cardHeight,
@@ -95,7 +95,7 @@ public class TablePanel extends JPanel {
         int handCount = 0;
         for (Hole hole : playerCards) {
             int x = xs[handCount];
-            int y = ys[handCount];
+            int y = ysBelow[handCount];
             int count = 0;
             for (Card card : hole.getCards()) {
                 ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), cardWidth, cardHeight);
@@ -112,16 +112,23 @@ public class TablePanel extends JPanel {
             Font font = g.getFont().deriveFont(Font.PLAIN, 14);
             g.setFont(font);
             FontMetrics fontMetrics = g.getFontMetrics(g.getFont());
-            String label = getHandLabel(handRank, hole);
-            Rectangle2D rect = fontMetrics.getStringBounds(label, g);
+
             int buffer = 4;
             int buffer2 = buffer * 2;
+
+            String label = getHandLabel(handRank, hole);
+            Rectangle2D rect = fontMetrics.getStringBounds(label, g);
             int labelX = x + cardWidth + BOARD_CARD_SPACING * 2 - (int)rect.getWidth()/2 - buffer;
             int labelY = y + cardHeight + BOARD_CARD_SPACING * 3;
-//            g.setColor(Color.GREEN.darker().darker().darker());
-//            g.fillRect(labelX - buffer, labelY - buffer, (int) rect.getWidth() + buffer2, (int) rect.getHeight() + buffer2);
             g.setColor(Color.WHITE);
-//            g.drawRect(labelX - buffer, labelY - buffer, (int) rect.getWidth() + buffer2, (int) rect.getHeight() + buffer2);
+            g.drawString(label, labelX, labelY + fontMetrics.getAscent());
+
+            int chenRank = new ChenFormula(hole).evaluate();
+            label = "Chen rank = " + chenRank;
+            rect = fontMetrics.getStringBounds(label, g);
+            labelX = x + cardWidth + BOARD_CARD_SPACING * 2 - (int)rect.getWidth()/2 - buffer;
+            labelY = y - BOARD_CARD_SPACING * 2 - (int)rect.getHeight()/2 - buffer2;
+            g.setColor(Color.WHITE);
             g.drawString(label, labelX, labelY + fontMetrics.getAscent());
 
             handCount++;

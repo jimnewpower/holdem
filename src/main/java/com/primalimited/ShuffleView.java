@@ -3,6 +3,7 @@ package com.primalimited;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
@@ -66,6 +67,8 @@ public class ShuffleView extends JFrame {
 
         private Deck deck;
 
+        private ShuffleStats shuffleStats = new ShuffleStats();
+
         Panel(Deck deck) {
             this.deck = deck;
             try {
@@ -85,23 +88,33 @@ public class ShuffleView extends JFrame {
         }
 
         void resetDeck() {
+            shuffleStats.reset();
             this.deck.reset();
         }
 
         void shuffle() {
-            this.deck.shuffle();
+            ShuffleStats stats = new ShuffleStats();
+            this.deck.shuffle(stats);
+            shuffleStats.setnJavaShuffles(shuffleStats.getnJavaShuffles() + stats.getnJavaShuffles());
+            shuffleStats.setnRiffles(shuffleStats.getnRiffles() + stats.getnRiffles());
+            shuffleStats.setnCuts(shuffleStats.getnCuts() + stats.getnCuts());
         }
 
         void shuffleSimple() {
+            shuffleStats.incrementJavaShuffles();
             this.deck.shuffleSimple();
         }
 
         void riffle() {
+            shuffleStats.incrementRiffles();
             this.deck.riffleShuffle();
         }
 
         void cut() {
+            shuffleStats.incrementCuts();
             this.deck.cutDeck();
+            validate();
+            repaint();
         }
 
         private void drawCards(Graphics g) {
@@ -122,6 +135,19 @@ public class ShuffleView extends JFrame {
                 drawCard(g, icon, (int)Math.round(x), y, cardWidth, cardHeight);
                 x += xIncrement;
             }
+
+            Font font = g.getFont().deriveFont(Font.PLAIN, 14);
+            g.setFont(font);
+            FontMetrics fontMetrics = g.getFontMetrics(g.getFont());
+            String label = shuffleStats.toString();
+            Rectangle2D rect = fontMetrics.getStringBounds(label, g);
+            int buffer = 4;
+            int buffer2 = buffer * 2;
+            int labelX = (int)(midX - rect.getWidth() / 2);
+            int labelY = y + cardHeight + BOARD_CARD_SPACING * 3;
+            g.setColor(Color.WHITE);
+            g.drawString(label, labelX, labelY + fontMetrics.getAscent());
+
         }
 
         private void drawCard(Graphics g, ImageIcon icon, int x, int y, int cardWidth, int cardHeight) {
