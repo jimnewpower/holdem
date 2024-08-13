@@ -1,13 +1,10 @@
 package com.primalimited;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardDisplay extends JFrame {
+public class NutsView extends JFrame {
 
     private static final int CARD_WIDTH = 222;
     private static final int CARD_HEIGHT = 323;
@@ -27,8 +24,8 @@ public class CardDisplay extends JFrame {
 
     private Images images = new Images();
 
-    public CardDisplay(Deck deck) {
-        setTitle("Holdem");
+    public NutsView(Deck deck) {
+        setTitle("Nuts");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 

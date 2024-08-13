@@ -11,12 +11,7 @@ import java.util.List;
 
 public class TablePanel extends JPanel {
     private static final double BOARD_CARD_WIDTH_FRACTION = 0.05;
-
-    private static final int BOARD_CARD_WIDTH = 88;
-    private static final int BOARD_CARD_HEIGHT = 130;
     private static final int BOARD_CARD_SPACING = 4;
-    private static final int PLAYER_CARD_WIDTH = 44;
-    private static final int PLAYER_CARD_HEIGHT = 65;
 
     private Images images = new Images();
     private BufferedImage backgroundImage;

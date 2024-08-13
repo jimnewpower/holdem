@@ -126,7 +126,7 @@ public class HomeController implements Controller {
             SwingUtilities.invokeLater(() -> {
                 Deck deck = new Deck();
                 deck.shuffle();
-                CardDisplay cardDisplay = new CardDisplay(deck);
+                NutsView cardDisplay = new NutsView(deck);
             });
         });
         buttonPanel.add(randomHandsButton);
