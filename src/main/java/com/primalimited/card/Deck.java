@@ -21,7 +21,6 @@ public class Deck {
     public void reset() {
         deck = new ArrayList<>();
         for (Suit suit : Suit.values()) {
-            int index = 0;
             for (Rank rank : Rank.values()) {
                 deck.add(new Card(rank, suit));
             }

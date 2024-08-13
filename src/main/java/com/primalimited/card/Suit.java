@@ -1,10 +1,10 @@
 package com.primalimited.card;
 
 public enum Suit {
-    CLUBS("Clubs", 'C'),
-    DIAMONDS("Diamonds", 'D'),
+    SPADES("Spades", 'S'),
     HEARTS("Hearts", 'H'),
-    SPADES("Spades", 'S');
+    DIAMONDS("Diamonds", 'D'),
+    CLUBS("Clubs", 'C');
 
     private final String name;
 
