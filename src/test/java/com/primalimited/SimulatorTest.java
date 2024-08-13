@@ -1,8 +1,7 @@
 package com.primalimited;
 
+import com.primalimited.sim.Simulator;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SimulatorTest {
 

@@ -1,11 +1,13 @@
 package com.primalimited;
 
+import com.primalimited.card.Card;
+import com.primalimited.card.CardRankComparator;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.primalimited.CardBuilder.*;
+import static com.primalimited.card.CardBuilder.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CardRankComparatorTest {

@@ -1,5 +1,9 @@
 package com.primalimited;
 
+import com.primalimited.card.Card;
+import com.primalimited.card.Deck;
+import com.primalimited.card.Hole;
+import com.primalimited.card.Nuts;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
@@ -7,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static com.primalimited.CardBuilder.*;
+import static com.primalimited.card.CardBuilder.*;
 
 class NutsTest {
 

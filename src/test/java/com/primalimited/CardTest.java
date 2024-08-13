@@ -1,8 +1,9 @@
 package com.primalimited;
 
+import com.primalimited.card.Card;
 import org.junit.jupiter.api.Test;
 
-import static com.primalimited.CardBuilder.*;
+import static com.primalimited.card.CardBuilder.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CardTest {

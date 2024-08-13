@@ -1,5 +1,7 @@
 package com.primalimited;
 
+import com.primalimited.card.Hole;
+import com.primalimited.card.HoleCardRanks;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

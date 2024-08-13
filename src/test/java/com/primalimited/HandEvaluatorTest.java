@@ -1,14 +1,17 @@
 package com.primalimited;
 
+import com.primalimited.card.Card;
+import com.primalimited.card.HandEvaluator;
+import com.primalimited.card.HandRank;
+import com.primalimited.card.Hole;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static com.primalimited.CardBuilder.*;
+import static com.primalimited.card.CardBuilder.*;
 
 class HandEvaluatorTest {
 

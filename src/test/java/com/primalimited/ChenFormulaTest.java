@@ -1,8 +1,11 @@
 package com.primalimited;
 
+import com.primalimited.card.ChenFormula;
+import com.primalimited.card.Hole;
+import com.primalimited.card.Rank;
 import org.junit.jupiter.api.Test;
 
-import static com.primalimited.CardBuilder.*;
+import static com.primalimited.card.CardBuilder.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ChenFormulaTest {
