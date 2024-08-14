@@ -2,6 +2,7 @@ package com.primalimited.app.view;
 
 import com.primalimited.card.Hole;
 import com.primalimited.card.HoleCardRanks;
+import com.primalimited.stats.QuizTally;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,8 +26,7 @@ public class HoleRankingsQuiz extends JFrame {
 
     HoleCardRanks ranks = new HoleCardRanks();
 
-    private int count = 0;
-    private int correctCount = 0;
+    private QuizTally quizTally = new QuizTally();
 
     public HoleRankingsQuiz() {
         initUI();
@@ -80,13 +80,13 @@ public class HoleRankingsQuiz extends JFrame {
             holePanelMap.put(hole, labelPanel);
             holeButton.add(labelPanel, BorderLayout.SOUTH);
             holeButton.addActionListener(e -> {
-                count++;
                 Hole selected = hole;
                 buttons.stream().forEach(b -> b.setEnabled(false));
                 if (highestRank.equals(selected)) {
-                    correctCount++;
+                    quizTally.tallyCorrectAnswer();
                     holeButton.setBackground(CORRECT_BACKGROUND);
                 } else {
+                    quizTally.tallyIncorrectAnswer();
                     holeButton.setBackground(INCORRECT_BACKGROUND);
                 }
                 holeRankMap.keySet().stream().forEach(h -> {
@@ -103,9 +103,7 @@ public class HoleRankingsQuiz extends JFrame {
                     panel.repaint();
                 });
                 topPanel.removeAll();
-                double percent = (double) correctCount / count * 100;
-                String message = "Hole Rankings Quiz: " + correctCount + " of " + count + " correct " + String.format("%.2f", percent) + "%";
-                topPanel.add(new JLabel(message));
+                topPanel.add(new JLabel(quizTally.toString()));
                 validate();
                 repaint();
             });

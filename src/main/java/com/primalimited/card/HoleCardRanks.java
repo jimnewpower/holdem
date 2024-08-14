@@ -215,6 +215,12 @@ public class HoleCardRanks {
         return Collections.unmodifiableList(random);
     }
 
+    public List<Hole> getRandomizedList() {
+        List<Hole> list = new ArrayList<>(ranked);
+        Collections.shuffle(list);
+        return list;
+    }
+
     public Map<Hole, Integer> getRandomMap(int n) {
         Map<Hole, Integer> random = new HashMap<>(n);
         SecureRandom randomizer = new SecureRandom();

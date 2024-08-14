@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TablePanel extends JPanel {
-    private static final double BOARD_CARD_WIDTH_FRACTION = 0.05;
-    private static final int BOARD_CARD_SPACING = 4;
-
     private Images images = new Images();
     private BufferedImage backgroundImage;
     private List<Card> board;
@@ -70,14 +67,16 @@ public class TablePanel extends JPanel {
         int cardWidth = playerCardDimension.width;
         int cardHeight = playerCardDimension.height;
 
+        final int spacing = Constants.BOARD_CARD_SPACING;
+
         // hand locations for six hands
         int[] xs = new int[] {
-                this.getWidth() / 4 - cardWidth - BOARD_CARD_SPACING,
-                this.getWidth() / 2 - cardWidth - BOARD_CARD_SPACING,
-                this.getWidth() - this.getWidth() / 4 - cardWidth - BOARD_CARD_SPACING,
-                this.getWidth() / 4 - cardWidth - BOARD_CARD_SPACING,
-                this.getWidth() / 2 - cardWidth - BOARD_CARD_SPACING,
-                this.getWidth() - this.getWidth() / 4 - cardWidth - BOARD_CARD_SPACING
+                this.getWidth() / 4 - cardWidth - spacing,
+                this.getWidth() / 2 - cardWidth - spacing,
+                this.getWidth() - this.getWidth() / 4 - cardWidth - spacing,
+                this.getWidth() / 4 - cardWidth - spacing,
+                this.getWidth() / 2 - cardWidth - spacing,
+                this.getWidth() - this.getWidth() / 4 - cardWidth - spacing
         };
         int[] ysBelow = new int[] {
                 this.getHeight() / 3 - cardHeight,
@@ -99,7 +98,7 @@ public class TablePanel extends JPanel {
                 if (count % 2 == 0) {
                     drawCard(g, icon, x, y, cardWidth, cardHeight);
                 } else {
-                    drawCard(g, icon, x + cardWidth + (BOARD_CARD_SPACING * 2), y, cardWidth, cardHeight);
+                    drawCard(g, icon, x + cardWidth + (spacing * 2), y, cardWidth, cardHeight);
                 }
                 count++;
             }
@@ -115,16 +114,16 @@ public class TablePanel extends JPanel {
 
             String label = getHandLabel(handRank, hole);
             Rectangle2D rect = fontMetrics.getStringBounds(label, g);
-            int labelX = x + cardWidth + BOARD_CARD_SPACING * 2 - (int)rect.getWidth()/2 - buffer;
-            int labelY = y + cardHeight + BOARD_CARD_SPACING * 3;
+            int labelX = x + cardWidth + spacing * 2 - (int)rect.getWidth()/2 - buffer;
+            int labelY = y + cardHeight + spacing * 3;
             g.setColor(Color.WHITE);
             g.drawString(label, labelX, labelY + fontMetrics.getAscent());
 
             int chenRank = new ChenFormula(hole).evaluate();
             label = "Chen rank = " + chenRank;
             rect = fontMetrics.getStringBounds(label, g);
-            labelX = x + cardWidth + BOARD_CARD_SPACING * 2 - (int)rect.getWidth()/2 - buffer;
-            labelY = y - BOARD_CARD_SPACING * 2 - (int)rect.getHeight()/2 - buffer2;
+            labelX = x + cardWidth + spacing * 2 - (int)rect.getWidth()/2 - buffer;
+            labelY = y - spacing * 2 - (int)rect.getHeight()/2 - buffer2;
             g.setColor(Color.WHITE);
             g.drawString(label, labelX, labelY + fontMetrics.getAscent());
 
@@ -152,7 +151,8 @@ public class TablePanel extends JPanel {
     }
 
     private void drawBoardCards(Graphics g) {
-        int midX = this.getWidth() / 2 - BOARD_CARD_SPACING * 4;
+        final int spacing = Constants.BOARD_CARD_SPACING;
+        int midX = this.getWidth() / 2 - spacing * 4;
         int midY = this.getHeight() / 2;
         Dimension boardCardDimension = getBoardCardDimension();
         int cardWidth = boardCardDimension.width;
@@ -188,27 +188,35 @@ public class TablePanel extends JPanel {
 
         int x = midX - boardWidth / 2;
         final int y = midY - cardHeight / 2;
-        int xIncrement = cardWidth + BOARD_CARD_SPACING * 2;
+        int xIncrement = cardWidth + spacing * 2;
 
         if (board == null || board.isEmpty()) {
             ImageIcon icon = images.createScaledImageIconWithWhiteBackground("/images/png/kem-cardback.png", cardWidth, cardHeight);
             for (int i = 0; i < 5; i++) {
                 drawCard(g, icon, (int)Math.round(x), y, cardWidth, cardHeight);
                 x += xIncrement;
+                if (i >= 2) {
+                    x += spacing * 2;
+                }
             }
             return;
         }
 
+        int count = 0;
         for (Card card : board) {
             ImageIcon icon = images.createScaledImageIconWithWhiteBackground(card.getPngImagePath(), cardWidth, cardHeight);
             drawCard(g, icon, x, y, cardWidth, cardHeight);
             x += xIncrement;
+            if (count >= 2) {
+                x += spacing * 2;
+            }
+            count++;
         }
 
         ImageIcon icon = images.createScaledImageIconWithWhiteBackground("/images/png/kem-cardback.png", cardWidth, cardHeight);
         for (int i = board.size(); i < 5; i++) {
             drawCard(g, icon, x, y, cardWidth, cardHeight);
-            x += xIncrement;
+            x += xIncrement + spacing * 2;
         }
 
     }
@@ -237,13 +245,13 @@ public class TablePanel extends JPanel {
     }
 
     private Dimension getBoardCardDimension() {
-        double cardWidth = this.getWidth() * BOARD_CARD_WIDTH_FRACTION;
+        double cardWidth = this.getWidth() * Constants.BOARD_CARD_WIDTH_FRACTION;
         double cardHeight = cardWidth / Constants.CARD_RATIO;
         return new Dimension((int) Math.round(cardWidth), (int) Math.round(cardHeight));
     }
 
     private Dimension getPlayerCardDimension() {
-        double cardWidth = this.getWidth() * BOARD_CARD_WIDTH_FRACTION;
+        double cardWidth = this.getWidth() * Constants.BOARD_CARD_WIDTH_FRACTION;
         double cardHeight = cardWidth / Constants.CARD_RATIO;
         return new Dimension((int) Math.round(cardWidth), (int) Math.round(cardHeight));
     }

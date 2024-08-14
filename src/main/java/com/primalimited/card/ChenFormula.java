@@ -1,5 +1,7 @@
 package com.primalimited.card;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,6 +33,10 @@ import java.util.Map;
  */
 public class ChenFormula {
 
+    public static Integer[] RANKINGS = new Integer[] {
+        20, 16, 14, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, -1
+    };
+
     private Hole hole;
 
     public ChenFormula(Hole hole) {
@@ -39,10 +45,29 @@ public class ChenFormula {
 
     @Override
     public String toString() {
-        return "ChenFormula{" +
-                "hole=" + hole +
-                " score=" + evaluate() +
-                '}';
+        float highCard = highestCardScore();
+        float pairValue = hole.isPair() ? Math.max(5, highCard * 2) : 0;
+        float suited = hole.isSuited() ? 2 : 0;
+        float gap = gapBonus() - gapPenalty();
+        return "Chen {" +
+                " High Card = " + (int)(Math.round(highCard)) +
+                " Pair = " + (int)(Math.round(pairValue)) +
+                " Suited = " + (int)(Math.round(suited)) +
+                " Gap = " + (int)(Math.round(gap)) +
+                " } = " + evaluate();
+    }
+
+    public Map<String, Integer> getRankingValues() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        float highCard = hole.isPair() ? 0 : highestCardScore();
+        float pairValue = hole.isPair() ? Math.max(5, highestCardScore() * 2) : 0;
+        float suited = hole.isSuited() ? 2 : 0;
+        float gap = gapBonus() - gapPenalty();
+        map.put("High Card", (int)Math.round(highCard));
+        map.put("Pair", (int)Math.round(pairValue));
+        map.put("Suited", (int)Math.round(suited));
+        map.put("Gap", (int)Math.round(gap));
+        return map;
     }
 
     public int evaluate() {

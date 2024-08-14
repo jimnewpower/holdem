@@ -76,22 +76,6 @@ public class HomeController implements Controller {
         buttonPanel.add(shuffleButton);
         shuffleButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton chenHoleCardQuizButton = new JButton("Chen Hole Card Rankings Quiz");
-        chenHoleCardQuizButton.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                new ChenRankingsQuiz();
-            });
-        });
-        buttonPanel.add(chenHoleCardQuizButton);
-
-        JButton holeCardQuizButton = new JButton("Hole Card Rankings Quiz");
-        holeCardQuizButton.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                new HoleRankingsQuiz();
-            });
-        });
-        buttonPanel.add(holeCardQuizButton);
-
         JButton chenHoleRankingsButton = new JButton("Chen Hole Card Rankings");
         chenHoleRankingsButton.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
@@ -101,6 +85,24 @@ public class HomeController implements Controller {
         buttonPanel.add(chenHoleRankingsButton);
         chenHoleRankingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        JButton chenHoleCardQuizButton = new JButton("Chen Hole Card Rankings Quiz");
+        chenHoleCardQuizButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                new ChenRankingsQuiz();
+            });
+        });
+        buttonPanel.add(chenHoleCardQuizButton);
+
+        JButton chenFlashcards = new JButton("Chen Flashcards");
+        chenFlashcards.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                JButton dealButton = new JButton("Deal");
+                ChenFlashcards frame = new ChenFlashcards(dealButton);
+                dealButton.addActionListener(e1 -> frame.deal());
+            });
+        });
+        buttonPanel.add(chenFlashcards);
+
         JButton holeRankingsButton = new JButton("Hole Card Rankings");
         holeRankingsButton.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
@@ -109,6 +111,14 @@ public class HomeController implements Controller {
         });
         buttonPanel.add(holeRankingsButton);
         holeRankingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton holeCardQuizButton = new JButton("Hole Card Rankings Quiz");
+        holeCardQuizButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                new HoleRankingsQuiz();
+            });
+        });
+        buttonPanel.add(holeCardQuizButton);
 
         JButton gameButton = new JButton("Game");
         gameButton.addActionListener(e -> {
