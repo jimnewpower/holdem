@@ -188,7 +188,7 @@ public class ChenFlashcards extends JFrame {
         }
 
         public Hole deal() {
-            this.hole = randomHoleCards.get(new SecureRandom().nextInt(randomHoleCards.size()) - 1);
+            this.hole = randomHoleCards.get(new SecureRandom().nextInt(randomHoleCards.size()));
             return hole;
         }
 

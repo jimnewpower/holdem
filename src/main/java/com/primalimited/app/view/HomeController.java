@@ -57,6 +57,21 @@ public class HomeController implements Controller {
         buttonPanel.setLayout(new GridLayout(3, 4, gap, gap));
         frame.add(buttonPanel, BorderLayout.CENTER);
 
+        JButton deckButton = new JButton("Deck");
+        deckButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                JFrame frame = new JFrame();
+                frame.setTitle("Deck");
+                frame.setLayout(new BorderLayout());
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setIconImage(new ImageIcon(getClass().getResource("/images/png/poker_chip_100.png")).getImage());
+                frame.add(new DeckGrid(new Deck()), BorderLayout.CENTER);
+                frame.setSize(1100, 540);
+                frame.setVisible(true);
+            });
+        });
+        buttonPanel.add(deckButton);
+
         JButton shuffleButton = new JButton("Shuffle");
         shuffleButton.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
